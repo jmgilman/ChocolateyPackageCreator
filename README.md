@@ -1,0 +1,1 @@
+Powershell module for creating internal Chocolatey packages
