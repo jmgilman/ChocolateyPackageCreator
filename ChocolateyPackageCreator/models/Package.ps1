@@ -1,6 +1,5 @@
 class Package {
     [string] $Name
-    [string] $Version
     [string] $Path
     [string] $InstallScript
     [string] $ProcessScript
@@ -9,13 +8,12 @@ class Package {
 }
 
 class LocalFile {
-    [string] $Path
+    [string] $LocalPath
     [string] $ImportPath
 }
 
 class RemoteFile {
     [string] $Url
-    [string] $FileName
     [string] $ImportPath
 }
 
