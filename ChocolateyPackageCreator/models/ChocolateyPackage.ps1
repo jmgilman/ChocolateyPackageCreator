@@ -1,8 +1,9 @@
-class Package {
+class ChocolateyPackage {
     [string] $Name
     [string] $Path
     [string] $InstallScript
     [string] $ProcessScript
+    [PackageManifest] $Manifest
     [LocalFile[]] $LocalFiles
     [RemoteFile[]] $RemoteFiles
 }
