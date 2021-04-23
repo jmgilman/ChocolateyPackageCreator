@@ -17,6 +17,9 @@
     The output directory where the final package file will be placed
 .PARAMETER ChocolateyPath
     The path to the choco binary - defaults to 'choco'
+.PARAMETER KeepFiles
+    If set, does not delete the package files gathered during the build process.
+    This is usually useful for debugging packages.
 .PARAMETER ScanFiles
     Whether or not to scan any downloaded files using Windows Defender
 .EXAMPLE
@@ -42,7 +45,8 @@ Function Build-ChocolateyPackage {
         )]
         [string] $OutPath,
         [string] $ChocolateyPath = 'choco',
-        [switch] $ScanFiles
+        [switch] $ScanFiles,
+        [switch] $KeepFiles
     )
 
     Write-Verbose 'Creating build directory...'
@@ -98,8 +102,10 @@ Function Build-ChocolateyPackage {
         throw 'The Chocolatey package process exited with non-zero exit code: {0}' -f $proc.ExitCode
     }
 
-    Write-Verbose 'Cleaning up...'
-    Remove-Item $buildDir -Recurse
+    if (!$KeepFiles) {
+        Write-Verbose 'Cleaning up...'
+        Remove-Item $buildDir -Recurse
+    }
     
     $packageName = '{0}.{1}.nupkg' -f $Package.Manifest.Metadata.Id, $Package.Manifest.Metadata.Version
     Join-Path $OutPath $packageName
