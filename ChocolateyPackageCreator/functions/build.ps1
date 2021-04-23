@@ -100,7 +100,7 @@ Function Build-ChocolateyPackage {
         '--outputdirectory {0}' -f $OutPath
     )
 
-    Write-Verbose ("Executing `"{0} {1}`" in directory {2}" -f 'choco', ($chocoArgs -join ' '), $OutPath)
+    Write-Verbose ("Executing `"{0} {1}`" in directory {2}" -f $ChocolateyPath, ($chocoArgs -join ' '), $OutPath)
     $proc = Start-Process $ChocolateyPath -ArgumentList $chocoArgs -WorkingDirectory $buildDir -PassThru -NoNewWindow -Wait
 
     if ($proc.ExitCode -ne 0) {
