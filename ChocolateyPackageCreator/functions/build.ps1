@@ -83,6 +83,11 @@ Function Build-ChocolateyPackage {
         }
     }
 
+    if (!$Package.Shim) {
+        Write-Verbose "Preventing shimming of exe's..."
+        Invoke-Unshim $buildDir
+    }
+
     if ($Package.processScript) {
         $proc = Get-Command $Package.processScript | Select-Object -ExpandProperty ScriptBlock
         $proc.Invoke($buildDir)
@@ -266,4 +271,30 @@ Function New-ChocolateyNuSpec {
 
     $xml.AppendChild($package) | Out-Null
     $xml
+}
+
+<#
+.SYNOPSIS
+    Creates ignore files for all executables at the given path
+.DESCRIPTION
+    Recursively scans the given path for .exe files and, for each file found,
+    creates an assocated .ignore file in the same location as the exe file.
+    This prevents exe files from being automatically shimmed by Chocolatey.
+.PARAMETER BuildPath
+    The path to search and unshim files for
+.EXAMPLE
+    Invoke-Unshim C:\my\build\path
+.OUTPUTS
+    None
+#>
+Function Invoke-Unshim {
+    param($BuildPath)
+
+    $exeFiles = Get-ChildItem $BuildPath -Filter '*.exe' -Recurse
+    foreach ($file in $exeFiles) {
+        $ignoreFile = $file.FullName + '.ignore'
+
+        Write-Verbose ('Preventing shim of {0} with {1}...' -f $file.FullName, $ignoreFile)
+        Set-Content $ignoreFile ''
+    }
 }

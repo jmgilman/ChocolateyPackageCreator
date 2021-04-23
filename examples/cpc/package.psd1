@@ -1,6 +1,7 @@
 @{
     name          = 'cpc'
     processScript = 'process.ps1'
+    shim          = $False
     localFiles    = @(
         @{
             localPath  = 'files/config.yml'

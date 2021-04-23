@@ -2,6 +2,7 @@ class ChocolateyPackage {
     [string] $Name
     [string] $Path
     [string] $ProcessScript
+    [bool] $Shim
     [PackageManifest] $Manifest
     [LocalFile[]] $LocalFiles
     [RemoteFile[]] $RemoteFiles
