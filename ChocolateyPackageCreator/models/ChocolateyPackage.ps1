@@ -1,7 +1,6 @@
 class ChocolateyPackage {
     [string] $Name
     [string] $Path
-    [string] $InstallScript
     [string] $ProcessScript
     [PackageManifest] $Manifest
     [LocalFile[]] $LocalFiles
@@ -37,7 +36,7 @@ class PackageMetadata {
     [string] $Tags
     [string] $Copyright
     [string] $LicenseUrl
-    [bool] $RequireLicenseAcceptance
+    [string] $RequireLicenseAcceptance
 }
 
 class PackageDependency {

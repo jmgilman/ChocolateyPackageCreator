@@ -1,6 +1,5 @@
 @{
     name          = 'cpc'
-    installScript = 'install.ps1'
     processScript = 'process.ps1'
     localFiles    = @(
         @{

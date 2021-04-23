@@ -31,6 +31,12 @@ Function New-ChocolateyPackage {
     $config.Add('path', $PackagePath)
     Test-PackageConfiguration -Configuration $config
 
+    # Fully qualify local file paths
+    foreach ($localFile in $config.localFiles) {
+        $localFile.localPath = Join-Path $PackagePath $localFile.localPath
+    }
+    $config.processScript = Join-Path $PackagePath $config.processScript
+
     $config.manifest = @{
         metadata     = New-Object PackageMetadata -Property $config.manifest.metadata
         dependencies = $config.manifest.dependencies.ForEach( {
