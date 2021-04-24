@@ -88,7 +88,7 @@ Function Build-ChocolateyPackage {
     if ($Package.processScript) {
         Write-Verbose ('Calling process script at {0}...' -f $Package.processScript) 
         $proc = Get-Command $Package.processScript | Select-Object -ExpandProperty ScriptBlock
-        $proc.Invoke($buildDir) | Out-Null
+        $proc.Invoke($buildDir, $Package) | Out-Null
     }
 
     $chocoArgs = @(

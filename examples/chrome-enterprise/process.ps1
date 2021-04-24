@@ -1,4 +1,4 @@
-param($BuildPath)
+param($BuildPath, $Package)
 
 $toolsDir = Join-Path $BuildPath 'tools'
 $chromeDir = Join-Path $toolsDir 'chrome'

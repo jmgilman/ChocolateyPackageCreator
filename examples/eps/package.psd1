@@ -12,7 +12,7 @@
     )
     manifest      = @{
         metadata = @{
-            id                       = 'eps.extension'
+            id                       = 'eps'
             title                    = 'EPS'
             version                  = '1.0.0'
             authors                  = 'Dave Wu'
