@@ -51,7 +51,7 @@ Function Build-ChocolateyPackage {
 
     Write-Verbose 'Creating build directory...'
     $buildDir = Join-Path $OutPath 'build'
-    New-Item -ItemType Directory $buildDir
+    New-Item -ItemType Directory $buildDir | Out-Null
 
     Write-Verbose 'Creating NuSpec file...'
     $xml = New-ChocolateyNuSpec $Package.Manifest
@@ -61,12 +61,7 @@ Function Build-ChocolateyPackage {
     if ($Package.RemoteFiles) {
         Write-Verbose 'Downloading remote files...'
         foreach ($remoteFile in $Package.RemoteFiles) {
-            if ($ScanFiles) {
-                $remoteFile | Get-RemoteFile -OutPath $buildDir -Scan
-            }
-            else {
-                $remoteFile | Get-RemoteFile -OutPath $buildDir
-            }
+            $remoteFile | Get-RemoteFile -OutPath $buildDir -Scan:$ScanFiles | Out-Null
         }
     }
 
@@ -75,22 +70,22 @@ Function Build-ChocolateyPackage {
         foreach ($localFile in $Package.LocalFiles) {
             $outFile = Join-Path $buildDir $localFile.ImportPath
             if (!(Test-Path (Split-Path $outFile))) {
-                New-Item -ItemType Directory -Path (Split-Path $outFile)
+                New-Item -ItemType Directory -Path (Split-Path $outFile) | Out-Null
             }
 
             Write-Verbose ('Copying {0} to {1}...' -f $localFile.LocalPath, $outFile)
-            Copy-Item $localFile.LocalPath $outFile
+            Copy-Item $localFile.LocalPath $outFile | Out-Null
         }
     }
 
     if (!$Package.Shim) {
         Write-Verbose "Preventing shimming of exe's..."
-        Invoke-Unshim $buildDir
+        Invoke-Unshim $buildDir | Out-Null
     }
 
     if ($Package.processScript) {
         $proc = Get-Command $Package.processScript | Select-Object -ExpandProperty ScriptBlock
-        $proc.Invoke($buildDir)
+        $proc.Invoke($buildDir) | Out-Null
     }
 
     Write-Verbose 'Building package...'
@@ -109,7 +104,7 @@ Function Build-ChocolateyPackage {
 
     if (!$KeepFiles) {
         Write-Verbose 'Cleaning up...'
-        Remove-Item $buildDir -Recurse
+        Remove-Item $buildDir -Recurse | Out-Null
     }
     
     $packageName = '{0}.{1}.nupkg' -f $Package.Manifest.Metadata.Id, $Package.Manifest.Metadata.Version
