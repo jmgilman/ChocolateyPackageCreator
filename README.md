@@ -8,13 +8,17 @@ $> Install-Module ChocolateyPackageCreator
 
 ## Usage
 ```
-$> $config = Import-PowerShellDataFile $ConfigFile
-$> $packagePath = New-ChocolateyPackage (Split-Path $ConfigFile) $config | 
-    Build-ChocolateyPackage -OutPath $OutPath
+$> New-ChocolateyPackageConfig C:\my\package
+# Modify package files
+$> $configFile = 'C:\my\package\package.psd1'
+$> $outPath = 'C:\my\package\bin'
+$> $config = Import-PowerShellDataFile $configFile
+$> $packagePath = New-ChocolateyPackage (Split-Path $configFile) $config | 
+    Build-ChocolateyPackage -OutPath $outPath
 $> Publish-ChocolateyPackage `
-    -Repository $Repository `
+    -Repository 'http://my.nuget.com/repository' `
     -ApiKey $env:API_KEY `
-    -PackageFile $PackageFile
+    -PackageFile $packagePath
 ```
 
 For more in-depth directions see the examples folder.

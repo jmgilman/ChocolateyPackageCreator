@@ -15,6 +15,7 @@ class LocalFile {
 
 class RemoteFile {
     [string] $Url
+    [string] $Sha1
     [string] $ImportPath
 }
 

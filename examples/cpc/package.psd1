@@ -11,6 +11,7 @@
     remoteFiles   = @(
         @{
             url        = 'https://github.com/jmgilman/ChocolateyPackageManager/archive/refs/heads/master.zip'
+            sha1       = ''
             importPath = 'extensions/cpc.zip'
         }
     )

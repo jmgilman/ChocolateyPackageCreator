@@ -28,7 +28,8 @@ file will be copied to in the package.
 * **RemoteFiles**: An array of dictionaries with each dictionary representing a 
 remote file which should be downloaded to the package. Each remote file has an
 associated `Url` where it can be downloaded from and an `ImportPath` which is
-the relative path it will be saved to in the package.
+the relative path it will be saved to in the package. An optional hash can be
+provided which will be used to validate the remote file has not changed.
 * **Manifest**: This is basically the Chocolatey NuSpec file in a configuration
 format. All properties here will match their respective property in the NuSpec
 file.

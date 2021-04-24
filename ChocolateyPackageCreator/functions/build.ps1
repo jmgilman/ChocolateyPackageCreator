@@ -158,6 +158,17 @@ Function Get-RemoteFile {
     Write-Verbose ('Downloading {0} to {1}...' -f $File.Url, $filePath)
     Invoke-WebRequest $File.Url -OutFile $filePath
 
+    if ($File.Sha1) {
+        Write-Verbose ('Computing file hash for {0}...' -f $filePath)
+        $hash = Get-FileHash $filePath -Algorithm SHA1
+
+        Write-Verbose ('Downloaded file hash: {0}' -f $hash.Hash)
+        Write-Verbose ('Expected file hash: {0}' -f $File.Sha1)
+        if ($File.Sha1 -ne $hash.Hash) {
+            throw 'The downloaded file hash did not match the expected hash'
+        }
+    }
+
     if ($Scan) {
         Write-Verbose ('Scanning {0}...' -f $filePath)
         $exitCode = Invoke-WindowsDefenderScan $filePath

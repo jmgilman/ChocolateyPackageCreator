@@ -56,6 +56,35 @@ Function New-ChocolateyPackage {
     New-Object ChocolateyPackage -Property $config
 }
 
+<#
+.SYNOPSIS
+    Creates an example package configuration structure at the given path
+.DESCRIPTION
+    Creates an example package configuration file along with an example process
+    and Chocolatey install file at the given path. This is the easiest way to
+    get started with making a new package.
+.PARAMETER PackagePath
+    The full file path to where the package files will be created
+.EXAMPLE
+    New-ChocolateyPackageConfig C:\my\package
+.OUTPUTS
+    None
+#>
+Function New-ChocolateyPackageConfig {
+    param(
+        [string] $PackagePath
+    )
+
+    if (!(Test-Path $PackagePath)) {
+        Write-Verbose ('Creating {0}...' -f $PackagePath)
+        New-Item -ItemType Directory $PackagePath | Out-Null
+    }
+
+    $packageFiles = Join-Path $PSScriptRoot '..\static'
+    Write-Verbose ('Copying package files from {0} to {1}...' -f $packageFiles, $PackagePath)
+    Copy-Item (Join-Path $packageFiles '*') $PackagePath -Recurse | Out-Null
+}
+
 Function Test-PackageConfiguration {
     param(
         [hashtable] $Configuration
