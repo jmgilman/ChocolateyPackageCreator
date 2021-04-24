@@ -24,3 +24,4 @@ $packagePath = New-ChocolateyPackage (Split-Path $ConfigFile) $config |
     Build-ChocolateyPackage -OutPath $OutPath -ScanFiles:$hasDefender -Verbose:$verbose
 
 $packagePath
+Write-Output "##vso[task.setvariable variable=packagePath;]$packagePath"

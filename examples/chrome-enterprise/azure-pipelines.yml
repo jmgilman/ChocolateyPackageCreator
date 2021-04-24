@@ -1,0 +1,24 @@
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - examples/chrome-enterprise/*
+jobs:
+- job: Default
+  steps:
+  - task: PowerShell@2
+    displayName: 'Build Chrome Enterprise package'
+    inputs:
+      filePath: examples/build.ps1
+      arguments: -ConfigFile examples/chrome-enterprise/package.psd1 -OutPath $(Build.StagingDirectory) -Verbose
+      pwsh: true
+  - task: PowerShell@2
+    displayName: 'Deploy Chrome Enterprise package'
+    inputs:
+      filePath: examples/publish.ps1
+      arguments: -Repository $(nuget.repository) -PackagePath $(packagePath)
+      pwsh: true
+    env:
+      API_KEY: $(nuget.apikey)
