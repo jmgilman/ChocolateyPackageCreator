@@ -12,4 +12,9 @@ if (!$env:API_KEY) {
     throw 'Please supply the NuGet API key via the `API_KEY` environment variable'
 }
 
-Publish-ChocolateyPackage -Repository $Repository -ApiKey $env:API_KEY -PackageFile $PackageFile -Force:$Force
+$verbose = $PSCmdlet.MyInvocation.BoundParameters['Verbose']
+Publish-ChocolateyPackage `
+    -Repository $Repository `
+    -ApiKey $env:API_KEY -PackageFile $PackageFile `
+    -Force:$Force `
+    -Verbose:$verbose
