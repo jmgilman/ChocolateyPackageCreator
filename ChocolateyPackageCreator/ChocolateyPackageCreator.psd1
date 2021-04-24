@@ -11,7 +11,7 @@
     RootModule           = './ChocolateyPackageCreator.psm1'
 
     # Version number of this module.
-    ModuleVersion        = '0.0.1'
+    ModuleVersion        = '0.0.2'
 
     # Supported PSEditions
     CompatiblePSEditions = @( 'Desktop', 'Core' )
@@ -63,7 +63,7 @@
             LicenseUri                 = 'https://www.mit.edu/~amini/LICENSE.md'
 
             # A URL to the main website for this project.
-            ProjectUri                 = 'https://github.com/jmgilman/ChocolateyPackageManager'
+            ProjectUri                 = 'https://github.com/jmgilman/ChocolateyPackageCreator'
 
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
             RequireLicenseAcceptance   = $false

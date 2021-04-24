@@ -10,7 +10,7 @@
     )
     remoteFiles   = @(
         @{
-            url        = 'https://github.com/jmgilman/ChocolateyPackageManager/archive/refs/heads/master.zip'
+            url        = 'https://github.com/jmgilman/ChocolateyPackageCreator/archive/refs/heads/master.zip'
             sha1       = ''
             importPath = 'extensions/cpc.zip'
         }
@@ -24,11 +24,11 @@
             owners                   = 'Joshua Gilman'
             summary                  = 'Installs the ChocolateyPackageCreator Powershell module as a Chocolatey extension'
             description              = 'Powershell module for creating internal Chocolatey packages'
-            projectUrl               = 'https://github.com/jmgilman/ChocolateyPackageManager'
-            packageSourceUrl         = 'https://github.com/jmgilman/ChocolateyPackageManager'
+            projectUrl               = 'https://github.com/jmgilman/ChocolateyPackageCreator'
+            packageSourceUrl         = 'https://github.com/jmgilman/ChocolateyPackageCreator'
             tags                     = 'chocolatey package creator'
             copyright                = '2021 Joshua Gilman'
-            licenseUrl               = 'https://github.com/jmgilman/ChocolateyPackageManager/blob/master/README.md'
+            licenseUrl               = 'https://github.com/jmgilman/ChocolateyPackageCreator/blob/master/README.md'
             requireLicenseAcceptance = 'false'
         }
         dependencies = @(
