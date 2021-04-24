@@ -30,12 +30,7 @@
             copyright                = '2021 Google'
             licenseUrl               = 'https://chromeenterprise.google/terms/chrome-service-license-agreement/'
             requireLicenseAcceptance = 'false'
-            dependencies             = @(
-                @{
-                    id      = 'test'
-                    version = '1.0.0'
-                }
-            )
+            dependencies             = @()
         }
         files    = @(
             @{
