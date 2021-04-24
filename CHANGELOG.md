@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Adds an example for packaging the Powershell EPS extension
 
+### Changed
+- Process scripts now receive two parameters, the build path and a copy of the ChocolateyPackage object
+
 ### Removed
 - Removes example for packaging this repository as an extension
 
