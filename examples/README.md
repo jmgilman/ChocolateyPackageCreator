@@ -44,7 +44,7 @@ The process script file will be passed a single argument: the full path to the
 build directory where all of the package files have been collected. The general
 purpose of the process script is to perform any additional actions on package
 files before the final package is compiled. Examples include unzipping files,
-removing unecessary files, or moving dynmically adding content like
+removing unecessary files, or dynamically adding content like
 configuration files.
 
 The process script should not return anything and all output from it is
