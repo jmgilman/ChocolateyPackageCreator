@@ -8,13 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-
 - Adds an example for packaging the Powershell EPS extension
+
+### Removed
+- Removes example for packaging this repository as an extension
 
 ## [0.0.3] - 2021-04-24
 
-### Fixed
-
+### Changed
 - Moved the `dependencies` property to its correct place under `metadata`
 - Updated the NuSpec generation logic to be more dynamic
 - Improves verbose logging
@@ -22,17 +23,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.2] - 2021-04-24
 
 ### Added
-
 - Example Azure DevOps pipeline file for Chrome example
 
-### Fixed
-
+### Changed
 - Updated Github repository URL to be correct
 
 ## [0.0.1] - 2021-04-24
 
 ### Added
-
 - Initial release
 
 [unreleased]: https://github.com/jmgilman/ChocolateyPackageCreator/compare/v0.0.3...HEAD
