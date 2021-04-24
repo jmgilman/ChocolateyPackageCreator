@@ -49,13 +49,15 @@ Function Build-ChocolateyPackage {
         [switch] $KeepFiles
     )
 
-    Write-Verbose 'Creating build directory...'
     $buildDir = Join-Path $OutPath 'build'
+
+    Write-Verbose ('Creating build directory at {0}...' -f $buildDir)
     New-Item -ItemType Directory $buildDir | Out-Null
 
-    Write-Verbose 'Creating NuSpec file...'
-    $xml = New-ChocolateyNuSpec $Package.Manifest
     $nuspecPath = (Join-Path $buildDir ($Package.Manifest.Metadata.Id + '.nuspec'))
+
+    Write-Verbose ('Creating NuSpec file at {0}...' -f $nuspecPath)
+    $xml = New-ChocolateyNuSpec $Package.Manifest
     $xml.Save($nuspecPath)
 
     if ($Package.RemoteFiles) {
@@ -84,11 +86,11 @@ Function Build-ChocolateyPackage {
     }
 
     if ($Package.processScript) {
+        Write-Verbose ('Calling process script at {0}...' -f $Package.processScript) 
         $proc = Get-Command $Package.processScript | Select-Object -ExpandProperty ScriptBlock
         $proc.Invoke($buildDir) | Out-Null
     }
 
-    Write-Verbose 'Building package...'
     $chocoArgs = @(
         'pack',
         $nuspecPath,
