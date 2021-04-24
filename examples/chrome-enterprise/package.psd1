@@ -16,7 +16,7 @@
         }
     )
     manifest      = @{
-        metadata     = @{
+        metadata = @{
             id                       = 'chrome-enterprise'
             title                    = 'Google Chrome'
             version                  = '90.0.4430.85'
@@ -30,11 +30,16 @@
             copyright                = '2021 Google'
             licenseUrl               = 'https://chromeenterprise.google/terms/chrome-service-license-agreement/'
             requireLicenseAcceptance = 'false'
+            dependencies             = @(
+                @{
+                    id      = 'test'
+                    version = '1.0.0'
+                }
+            )
         }
-        dependencies = @()
-        files        = @(
+        files    = @(
             @{
-                source = 'tools\**'
+                src    = 'tools\**'
                 target = 'tools'
             }
         )

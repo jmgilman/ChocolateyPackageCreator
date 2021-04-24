@@ -239,46 +239,107 @@ Function New-ChocolateyNuSpec {
         [PackageManifest] $Manifest
     )
 
+    # Create root element
     [xml]$xml = New-Object System.Xml.XmlDocument
     $xml.AppendChild($xml.CreateXmlDeclaration('1.0', 'UTF-8', $null)) | Out-Null
     
+    # Create package element
     $package = $xml.CreateNode('element', 'package', $null)
     $package.SetAttribute('xmlns', 'http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd')
 
+    # Create metadata element
     $metadata = $xml.CreateNode('element', 'metadata', $null)
-    $metadataProperties = $Manifest.Metadata | Get-Member | Where-Object MemberType -EQ 'Property' | Select-Object -ExpandProperty Name
-    foreach ($property in $metadataProperties) {
-        $propertyName = $property.Insert(0, $property.Substring(0, 1).ToLower()).Remove(1, 1) # Uncapitalize
-        $xmlProperty = $xml.CreateNode('element', $propertyName, $null)
-        $xmlProperty.InnerText = $Manifest.Metadata | Select-Object -ExpandProperty $property
-        $metadata.AppendChild($xmlProperty) | Out-Null
-    }
-    $package.AppendChild($metadata) | Out-Null
+    Add-PropertiesToNode $Manifest.Metadata $metadata -Ignore @('Dependencies') -Uncapitalize | Out-Null
 
-    if ($Manifest.Dependencies) {
+    # Create metadata dependencies element if present
+    if ($Manifest.Metadata.Dependencies) {
         $dependencies = $xml.CreateNode('element', 'dependencies', $null)
-        foreach ($dep in $Manifest.Dependencies) {
-            $xmlDep = $xml.CreateNode('element', 'dependency', $null)
-            $xmlDep.SetAttribute('id', $dep.Id)
-            $xmlDep.SetAttribute('version', $dep.Version)
-            $dependencies.AppendChild($xmlDep) | Out-Null
+        foreach ($dependency in $Manifest.Metadata.Dependencies) {
+            $dependencyNode = $xml.CreateNode('element', 'dependency', $null)
+            Add-PropertiesToNode $dependency $dependencyNode -Uncapitalize -UseAttributes | Out-Null
+            $dependencies.AppendChild($dependencyNode) | Out-Null
         }
         $metadata.AppendChild($dependencies) | Out-Null
     }
+    $package.AppendChild($metadata) | Out-Null
 
+    # Create files element if present
     if ($Manifest.Files) {
         $files = $xml.CreateNode('element', 'files', $null)
         foreach ($file in $Manifest.Files) {
-            $xmlFile = $xml.CreateNode('element', 'file', $null)
-            $xmlFile.SetAttribute('src', $file.Source)
-            $xmlFile.SetAttribute('target', $file.Target)
-            $files.AppendChild($xmlFile) | Out-Null
+            $fileNode = $xml.CreateNode('element', 'file', $null)
+            Add-PropertiesToNode $file $fileNode -Uncapitalize -UseAttributes | Out-Null
+            $files.AppendChild($fileNode) | Out-Null
         }
         $package.AppendChild($files) | Out-Null
     }
 
     $xml.AppendChild($package) | Out-Null
     $xml
+}
+
+<#
+.SYNOPSIS
+    Adds properties from the given object to the given XML node
+.DESCRIPTION
+    Iterates through all properties on the given object and assigns each
+    property to a child element on the given node. If UseAttributes is passed
+    then the properties are assigned to the given node as attributes instead.
+.PARAMETER Object
+    The object to copy properties from
+.PARAMETER Node
+    The XML node to add the properties to
+.PARAMETER Ignore
+    An array of property names to ignore and not add to the node
+.PARAMETER UseAttributes
+    Assigns the properties to the node as attributes instead of creating child
+    elements.
+.PARAMETER Uncapitalize
+    Removes capitalization from the property names before adding them
+.EXAMPLE
+    Add-PropertiesToNode $object $objectNode -Uncapitalize -UseAttributes
+.OUTPUTS
+    The XML node passed in is modified in place
+#>
+Function Add-PropertiesToNode {
+    param(
+        [Parameter(
+            Mandatory = $true,
+            Position = 1
+        )]
+        [object] $Object,
+        [Parameter(
+            Mandatory = $true,
+            Position = 2
+        )]
+        [System.Xml.XmlLinkedNode] $Node,
+        [string[]] $Ignore = @(),
+        [switch] $UseAttributes,
+        [switch] $Uncapitalize
+    )
+
+    $properties = $Object | Get-Member | Where-Object MemberType -EQ 'Property' | Select-Object -ExpandProperty Name
+    foreach ($property in $properties) {
+        $propertyName = $property
+        $propertyValue = $Object | Select-Object -ExpandProperty $property
+
+        if ($propertyName -in $Ignore) {
+            continue
+        }
+
+        if ($Uncapitalize) {
+            $propertyName = $property.Insert(0, $property.Substring(0, 1).ToLower()).Remove(1, 1)
+        }
+
+        if ($UseAttributes) {
+            $Node.SetAttribute($propertyName, $propertyValue) | Out-Null
+        }
+        else {
+            $xmlProperty = $xml.CreateNode('element', $propertyName, $null)
+            $xmlProperty.InnerText = $propertyValue
+            $Node.AppendChild($xmlProperty) | Out-Null
+        }
+    }
 }
 
 <#

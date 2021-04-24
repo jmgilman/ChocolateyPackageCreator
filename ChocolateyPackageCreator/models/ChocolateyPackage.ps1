@@ -21,7 +21,6 @@ class RemoteFile {
 
 class PackageManifest {
     [PackageMetadata] $Metadata
-    [PackageDependency[]] $Dependencies
     [PackageFile[]] $Files
 }
 
@@ -39,6 +38,7 @@ class PackageMetadata {
     [string] $Copyright
     [string] $LicenseUrl
     [string] $RequireLicenseAcceptance
+    [PackageDependency[]] $Dependencies
 }
 
 class PackageDependency {
@@ -47,6 +47,6 @@ class PackageDependency {
 }
 
 class PackageFile {
-    [string] $Source
+    [string] $Src
     [string] $Target
 }

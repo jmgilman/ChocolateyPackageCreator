@@ -37,12 +37,13 @@ Function New-ChocolateyPackage {
     }
     $config.processScript = Join-Path $PackagePath $config.processScript
 
+    # Build ChocolateyPackage object from configuration data
+    $config.manifest.metadata.dependencies = $config.manifest.metadata.dependencies.ForEach( {
+            New-Object PackageDependency -Property $_
+        })
     $config.manifest = @{
-        metadata     = New-Object PackageMetadata -Property $config.manifest.metadata
-        dependencies = $config.manifest.dependencies.ForEach( {
-                New-Object PackageDependency -Property $_
-            })
-        files        = $config.manifest.files.ForEach( {
+        metadata = New-Object PackageMetadata -Property $config.manifest.metadata
+        files    = $config.manifest.files.ForEach( {
                 New-Object PackageFile -Property $_
             })
     }
@@ -101,16 +102,10 @@ Function Test-PackageConfiguration {
                 }
                 Test-ConfigSection -Object ([PackageMetadata]::new()) -Properties $property.Value.metadata.Keys
 
-                if (!($property.Value.dependencies -is [array])) {
-                    throw 'Error validating package configuration: dependencies property must be an array'
-                }
-                foreach ($dependency in $property.Value.dependencies) {
+                foreach ($dependency in $property.Value.metadata.dependencies) {
                     Test-ConfigSection -Object ([PackageDependency]::new()) -Properties $dependency.Keys
                 }
 
-                if (!($property.Value.files -is [array])) {
-                    throw 'Error validating package configuration: files property must be an array'
-                }
                 foreach ($file in $property.Value.files) {
                     Test-ConfigSection -Object ([PackageFile]::new()) -Properties $file.Keys
                 }

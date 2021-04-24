@@ -16,7 +16,7 @@
         }
     )
     manifest      = @{
-        metadata     = @{
+        metadata = @{
             id                       = 'mypackage'
             title                    = 'My Package'
             version                  = '1.0.0'
@@ -30,11 +30,11 @@
             copyright                = '2021 Authors'
             licenseUrl               = 'https://www.mypackage.com/license'
             requireLicenseAcceptance = 'false'
+            dependencies             = @()
         }
-        dependencies = @()
-        files        = @(
+        files    = @(
             @{
-                source = 'tools\**'
+                src    = 'tools\**'
                 target = 'tools'
             }
         )

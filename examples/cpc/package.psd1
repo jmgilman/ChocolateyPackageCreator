@@ -16,7 +16,7 @@
         }
     )
     manifest      = @{
-        metadata     = @{
+        metadata = @{
             id                       = 'cpc'
             title                    = 'Chocolatey Package Creator'
             version                  = '0.1.1'
@@ -30,16 +30,16 @@
             copyright                = '2021 Joshua Gilman'
             licenseUrl               = 'https://github.com/jmgilman/ChocolateyPackageCreator/blob/master/README.md'
             requireLicenseAcceptance = 'false'
+            dependencies             = @(
+                @{
+                    id      = 'chocolatey-core.extension'
+                    version = '1.3.5.1'
+                }
+            )
         }
-        dependencies = @(
+        files    = @(
             @{
-                id      = 'chocolatey-core.extension'
-                version = '1.3.5.1'
-            }
-        )
-        files        = @(
-            @{
-                source = 'extensions\**'
+                src    = 'extensions\**'
                 target = 'extensions'
             }
         )
