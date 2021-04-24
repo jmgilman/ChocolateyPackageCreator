@@ -54,9 +54,13 @@ successful build should raise an exception to interrupt the build.
 ```
 $> $packageFile = .\build.ps1 `
     -ConfigFile .\chrome-enterprise\package.psd1 `
-    -OutPath (Get-Location) -Verbose
+    -OutPath (Get-Location) `
+    -Verbose
 $> $repo = 'http://my.nuget.com/repo'
 $> $env:API_KEY = 'myapikey'
-$> .\publish.ps1 -Repository $rep -PackageFile $packageFile
+$> .\publish.ps1 `
+    -Repository $rep `
+    -PackageFile $packageFile `
+    -Verbose
 $> Remove-Item $packageFile
 ```
