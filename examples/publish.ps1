@@ -15,6 +15,7 @@ if (!$env:API_KEY) {
 $verbose = $PSCmdlet.MyInvocation.BoundParameters['Verbose']
 Publish-ChocolateyPackage `
     -Repository $Repository `
-    -ApiKey $env:API_KEY -PackageFile $PackageFile `
+    -ApiKey $env:API_KEY `
+    -PackageFile $PackageFile `
     -Force:$Force `
     -Verbose:$verbose
