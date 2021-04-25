@@ -1,5 +1,5 @@
 @{
-    name          = 'eps'
+    name          = 'eps.extension'
     processScript = 'process.ps1'
     shim          = $False
     localFiles    = @()
@@ -12,7 +12,7 @@
     )
     manifest      = @{
         metadata = @{
-            id                       = 'eps'
+            id                       = 'eps.extension'
             title                    = 'EPS'
             version                  = '1.0.0'
             authors                  = 'Dave Wu'

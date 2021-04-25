@@ -36,7 +36,7 @@
             requireLicenseAcceptance = 'false'
             dependencies             = @(
                 @{
-                    id      = 'eps'
+                    id      = 'eps.extension'
                     version = '1.0.0'
                 }
             )
