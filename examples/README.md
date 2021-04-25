@@ -1,10 +1,11 @@
 # Summary
-This directory contains two examples of how to use the Chocolatey Package
-Creator module to dynamically create Chocolatey packages. The first example,
-entitled `cpc`, downloads the latest commit from the master branch of this
-repository and packages it into a Chocolatey Powershell extension. The second
-example, entitled `chrome-enterprise`, downloads the 64-bit version of Google
-Chrome and packages it into a Chocolatey package. 
+This directory contains examples of how to use the Chocolatey Package Creator 
+module to dynamically create Chocolatey packages. 
+
+* `chrome-enterprise`: Packages 64-bit Google Chrome browser
+* `eps`: Packages the Powershell EPS module as a Chocolatey extension. This is 
+used as a dependency in the `sql-express-adv` package.
+* `sql-express-adv`: Packages Microsoft SQL Server 2019 (advanced)
 
 # Architecture
 
@@ -40,11 +41,15 @@ will be called after local and remote files are downloaded and before the
 package is built. This property is optional and should be left blank if there is
 no need for this functionality. 
 
-The process script file will be passed a single argument: the full path to the
-build directory where all of the package files have been collected. The general
-purpose of the process script is to perform any additional actions on package
-files before the final package is compiled. Examples include unzipping files,
-removing unecessary files, or dynamically adding content like
+The process script file will be passed two arguments: 
+
+* `BuildPath`: The full path to the current build directory where package files
+have been collected.
+* `Package`: A copy of the ChocolateyPackage object being used for this build
+
+The general purpose of the process script is to perform any additional actions 
+on package files before the final package is compiled. Examples include 
+unzipping files, removing unecessary files, or dynamically adding content like
 configuration files.
 
 The process script should not return anything and all output from it is
