@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Adds an example for packaging the Powershell EPS extension
+- Adds an example for packaging SQL Server Express 2019 (Advanced)
 
 ### Changed
 - Process scripts now receive two parameters, the build path and a copy of the ChocolateyPackage object
