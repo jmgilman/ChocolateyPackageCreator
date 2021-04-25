@@ -2,7 +2,7 @@ param($BuildPath, $Package)
 
 $toolsDir = Join-Path $BuildPath 'tools'
 $chromeDir = Join-Path $toolsDir 'chrome'
-$zipFile = Join-Path $toolsDir 'chrome.zip'
+$zipFile = Join-Path $BuildPath $Package.RemoteFiles[0].ImportPath 
 
 New-Item -ItemType Directory $chromeDir
 Expand-Archive $zipFile $chromeDir

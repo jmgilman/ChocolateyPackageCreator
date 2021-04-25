@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Process scripts now receive two parameters, the build path and a copy of the ChocolateyPackage object
+- Updates Chrome example to use new process script parameter
 
 ### Removed
 - Removes example for packaging this repository as an extension
