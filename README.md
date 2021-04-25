@@ -7,21 +7,32 @@ $> Install-Module ChocolateyPackageCreator
 ```
 
 ## Usage
-```
+
+Create a new package template:
+```powershell
 $> New-ChocolateyPackageConfig C:\my\package
-# Modify package files
+```
+
+Modify the contents of the template package to fit the needs of the package
+you are trying to create. For more in-depth documentation and examples, see the
+`examples` directory. When ready, build the package:
+
+```powershell
 $> $configFile = 'C:\my\package\package.psd1'
 $> $outPath = 'C:\my\package\bin'
 $> $config = Import-PowerShellDataFile $configFile
 $> $packagePath = New-ChocolateyPackage (Split-Path $configFile) $config | 
     Build-ChocolateyPackage -OutPath $outPath
+```
+
+And then publish it:
+
+```powershell
 $> Publish-ChocolateyPackage `
     -Repository 'http://my.nuget.com/repository' `
     -ApiKey $env:API_KEY `
     -PackageFile $packagePath
 ```
-
-For more in-depth directions see the examples folder.
 
 ## Features
 

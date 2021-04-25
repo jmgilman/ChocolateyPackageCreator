@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Process scripts now receive two parameters, the build path and a copy of the ChocolateyPackage object
 - Updates Chrome example to use new process script parameter
 - Moves unshimming process to execute after the process script is executed
+- README improvements
 
 ### Removed
 - Removes example for packaging this repository as an extension

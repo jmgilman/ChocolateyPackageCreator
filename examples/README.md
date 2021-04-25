@@ -3,7 +3,7 @@ This directory contains examples of how to use the Chocolatey Package Creator
 module to dynamically create Chocolatey packages. 
 
 * `chrome-enterprise`: Packages 64-bit Google Chrome browser
-* `eps`: Packages the Powershell EPS module as a Chocolatey extension. This is 
+* `eps.extension`: Packages the Powershell EPS module as a Chocolatey extension. This is 
 used as a dependency in the `sql-express-adv` package.
 * `sql-express-adv`: Packages Microsoft SQL Server 2019 (advanced)
 
