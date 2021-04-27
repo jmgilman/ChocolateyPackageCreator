@@ -35,7 +35,9 @@ Function New-ChocolateyPackage {
     foreach ($localFile in $config.localFiles) {
         $localFile.localPath = Join-Path $PackagePath $localFile.localPath
     }
-    $config.processScript = Join-Path $PackagePath $config.processScript
+    if ($config.processScript) {
+        $config.processScript = Join-Path $PackagePath $config.processScript
+    }
 
     # Build ChocolateyPackage object from configuration data
     $config.manifest.metadata.dependencies = $config.manifest.metadata.dependencies.ForEach( {
