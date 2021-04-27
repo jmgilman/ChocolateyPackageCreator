@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Adds force flag to cleanup operation
+
 ## [0.0.5] - 2021-04-24
 
 ### Fixed

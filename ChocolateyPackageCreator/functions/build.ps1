@@ -106,7 +106,7 @@ Function Build-ChocolateyPackage {
 
     if (!$KeepFiles) {
         Write-Verbose 'Cleaning up...'
-        Remove-Item $buildDir -Recurse | Out-Null
+        Remove-Item $buildDir -Recurse -Force | Out-Null
     }
     
     $packageName = '{0}.{1}.nupkg' -f $Package.Manifest.Metadata.Id, $Package.Manifest.Metadata.Version
