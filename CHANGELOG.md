@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.6] - 2021-04-29
+
 ### Added
 - Adds force flag to cleanup operation
 
-## [0.0.5] - 2021-04-24
+## [0.0.5] - 2021-04-27
 
 ### Fixed
 - Fixes bug where an empty process script has its path qualified
@@ -50,7 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[unreleased]: https://github.com/jmgilman/ChocolateyPackageCreator/compare/v0.0.5...HEAD
+[unreleased]: https://github.com/jmgilman/ChocolateyPackageCreator/compare/v0.0.6...HEAD
+[0.0.6]: https://github.com/jmgilman/ChocolateyPackageCreator/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/jmgilman/ChocolateyPackageCreator/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/jmgilman/ChocolateyPackageCreator/compare/v0.0.3...v0.0.4
 [0.0.3]: https://github.com/jmgilman/ChocolateyPackageCreator/compare/v0.0.2...v0.0.3
