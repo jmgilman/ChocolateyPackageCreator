@@ -39,7 +39,8 @@
         'New-ChocolateyPackage',
         'New-ChocolateyPackageConfig',
         'Build-ChocolateyPackage',
-        'Publish-ChocolateyPackage'
+        'Publish-ChocolateyPackage',
+        '*'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -69,7 +70,7 @@
             RequireLicenseAcceptance   = $false
 
             # External dependent modules of this module
-            ExternalModuleDependencies = @()
+            ExternalModuleDependencies = @('EPS')
 
         } # End of PSData hashtable
 

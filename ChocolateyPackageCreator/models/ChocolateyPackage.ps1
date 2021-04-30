@@ -3,6 +3,7 @@ class ChocolateyPackage {
     [string] $Path
     [string] $ProcessScript
     [bool] $Shim
+    [PackageInstaller] $Installer
     [PackageManifest] $Manifest
     [LocalFile[]] $LocalFiles
     [RemoteFile[]] $RemoteFiles
@@ -49,4 +50,12 @@ class PackageDependency {
 class PackageFile {
     [string] $Src
     [string] $Target
+}
+
+class PackageInstaller {
+    [string] $ScriptLocation
+    [string] $InstallerPath
+    [string] $InstallerType
+    [string] $Flags
+    [hashtable] $Arguments
 }

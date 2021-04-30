@@ -55,6 +55,10 @@ Function New-ChocolateyPackage {
     $config.remoteFiles = $config.remoteFiles.ForEach( {
             New-Object RemoteFile -Property $_
         })
+    
+    if ($config.installer) {
+        $config.installer = New-Object PackageInstaller -Property $config.installer
+    }
 
     New-Object ChocolateyPackage -Property $config
 }
@@ -96,6 +100,12 @@ Function Test-PackageConfiguration {
     Test-ConfigSection -Object ([ChocolateyPackage]::new()) -Properties $Configuration.Keys
     foreach ($property in $Configuration.GetEnumerator()) {
         switch ($property.Name) {
+            Installer {
+                # This property is optional
+                if ($Configuration['Installer'].Count -gt 0) {
+                    Test-ConfigSection -Object ([PackageInstaller]::new()) -Properties $property.Value.Keys
+                }
+            }
             Manifest {
                 Test-ConfigSection -Object ([PackageManifest]::new()) -Properties $property.Value.Keys
 

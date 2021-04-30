@@ -2,6 +2,7 @@
     name          = 'mypackage'
     processScript = 'process.ps1'
     shim          = $False
+    installer     = @{}
     localFiles    = @(
         @{
             localPath  = 'files/ChocolateyInstall.ps1'

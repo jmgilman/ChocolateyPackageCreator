@@ -2,16 +2,18 @@
     name          = 'chrome-enterprise'
     processScript = 'process.ps1'
     shim          = $True
-    localFiles    = @(
-        @{
-            localPath  = 'files/ChocolateyInstall.ps1'
-            importPath = 'tools/ChocolateyInstall.ps1'
-        }
-    )
+    installer     = @{
+        scriptLocation = 'tools'
+        installerPath  = 'GoogleChromeStandaloneEnterprise64.msi'
+        installerType  = 'msi'
+        flags          = '/qn'
+        arguments      = @{}
+    }
+    localFiles    = @()
     remoteFiles   = @(
         @{
             url        = 'https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C-AFF1-A69D9E530F96%7D%26iid%3D%7B28B3FC2A-8F28-9145-D051-455305F69948%7D%26lang%3Den%26browser%3D4%26usagestats%3D0%26appname%3DGoogle%2520Chrome%26needsadmin%3Dtrue%26ap%3Dx64-stable-statsdef_0%26brand%3DGCEB/dl/chrome/install/GoogleChromeEnterpriseBundle64.zip'
-            sha1       = 'F80DE425387D4107EA7EDD047796DC4B286AAC85'
+            sha1       = '191A76F3084CD293FB8B56AEF9952236930BFE7D'
             importPath = 'tools/chrome.zip'
         }
     )

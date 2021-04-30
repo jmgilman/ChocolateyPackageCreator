@@ -80,6 +80,19 @@ Function Build-ChocolateyPackage {
         }
     }
 
+    if ($Package.Installer) {
+        $installerFolder = Join-Path $buildDir $Package.Installer.ScriptLocation
+        if (!(Test-Path $installerFolder)) {
+            New-Item -ItemType Directory $installerFolder | Out-Null
+        }
+
+        $installerFilePath = Join-Path $installerFolder 'ChocolateyInstall.ps1'
+        $installerFileContents = Build-InstallerFile $Package.Manifest.Metadata.Id $Package.Installer
+
+        Write-Verbose ('Writing installer file to {0}...' -f $installerFilePath)
+        Set-Content $installerFilePath $installerFileContents | Out-Null
+    }
+
     if ($Package.processScript) {
         Write-Verbose ('Calling process script at {0}...' -f $Package.processScript) 
         $proc = Get-Command $Package.processScript | Select-Object -ExpandProperty ScriptBlock
@@ -366,4 +379,40 @@ Function Invoke-Unshim {
         Write-Verbose ('Preventing shim of {0} with {1}...' -f $file.FullName, $ignoreFile)
         Set-Content $ignoreFile ''
     }
+}
+
+<#
+.SYNOPSIS
+    Returns the contents of a ChocolateyInstall.ps1 file using the PackageInstaller
+.DESCRIPTION
+    Using the built-in template, dynamically generates the contents of a 
+    ChocolateyInstall.ps1 file for the given PackageInstaller. The contents of
+    the file are returned. 
+.PARAMETER PackageName
+    The name of the Chocolatey Package
+.PARAMETER Installer
+    The PackageInstaller from the package
+.EXAMPLE
+    Set-Content 'ChocolateyInstall.ps1' (Build-InstallerFile 'mypackage' $Package.Installer)
+.OUTPUTS
+    The contents of the ChocolateyInstall.ps1 file
+#>
+Function Build-InstallerFile {
+    param(
+        [string] $PackageName,
+        [PackageInstaller] $Installer
+    )
+
+    $staticFilePath = Join-Path $PSScriptRoot '..\static'
+    $installerTemplate = Join-Path $staticFilePath 'template\ChocolateyInstall.eps'
+
+    $binding = @{
+        packageName = $PackageName
+        filePath    = $Installer.InstallerPath
+        fileType    = $Installer.InstallerType
+        flags       = $Installer.Flags
+        arguments   = $Installer.Arguments
+    }
+
+    Invoke-EpsTemplate -Path $installerTemplate -Safe -binding $binding
 }

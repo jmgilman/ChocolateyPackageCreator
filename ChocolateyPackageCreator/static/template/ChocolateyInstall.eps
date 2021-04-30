@@ -1,0 +1,50 @@
+$packageName = '<%= $packageName %>'
+$filePath = '<%= $filePath %>'
+$fileType = '<%= $fileType %>'
+$flags = '<%= $flags %>'
+
+<% if ($arguments.Count -eq 0) { -%>
+$arguments = @{}
+<%} else { -%>
+$arguments = @{
+<%= ($arguments.GetEnumerator() | ForEach-Object { '    ' + $_.Name + ' = "' + $_.Value + '"' }) -Join "`n" %>
+}
+<% } -%>
+
+$params = Get-PackageParameters
+
+# Build arguments
+if (($params.Count -gt 0) -and ($arguments.Count -eq 0)) {
+    Write-Warning 'Parameters were given but this package does not take any parameters'
+} elseif (($params.Count -gt 0) -and ($arguments.Count -gt 0)) {
+    foreach($param in $params.GetEnumerator()) {
+        if (!($param.Name -in $arguments.Keys)) {
+            Write-Warning ('This package does not have a {0} parameter' -f $param.Name)
+            continue
+        }
+
+        $arguments[$param.Name] = $param.Value
+    }
+}
+
+# Build argument string
+$silentArgs = $flags
+foreach($argument in $arguments.GetEnumerator()) {
+    if ($argument.Value) {
+        if ($fileType -eq 'exe') {
+            $argString = ' /{0}="{1}"' -f $argument.Name, $argument.Value
+        } else {
+            $argString = ' {0}="{1}"' -f $argument.Name, $argument.Value
+        }
+        $silentArgs += $argString
+    }
+}
+
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+$fileLocation = Join-Path $scriptDir $filePath
+
+Install-ChocolateyInstallPackage `
+    -PackageName $packageName `
+    -FileType $fileType `
+    -File $fileLocation `
+    -SilentArgs $silentArgs.Trim()
