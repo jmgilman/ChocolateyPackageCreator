@@ -2,6 +2,7 @@
     name          = 'sql-express-adv'
     processScript = 'process.ps1'
     shim          = $False
+    installer     = @{}
     localFiles    = @(
         @{
             localPath  = 'files/config.eps'

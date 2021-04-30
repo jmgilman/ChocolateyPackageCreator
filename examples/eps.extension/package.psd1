@@ -2,6 +2,7 @@
     name          = 'eps.extension'
     processScript = 'process.ps1'
     shim          = $False
+    installer     = @{}
     localFiles    = @()
     remoteFiles   = @(
         @{
