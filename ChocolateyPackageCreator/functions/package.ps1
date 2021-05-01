@@ -1,5 +1,36 @@
 <#
 .SYNOPSIS
+    Returns a ChocolateyISOPackage object using the given packages
+.DESCRIPTION
+    Returns a ChocolateyISOPackage object using the given packages. Each package
+    is validated before it is created. 
+.PARAMETER IsoPackage
+    The package which contains the ISO file contents
+.PARAMETER Packages
+    A list of packages which are subordinate and require use of the ISO file
+    contents
+.EXAMPLE
+    $package = New-ChocolateyISOPackage `
+        -IsoPackage $IsoPackage `
+        -Packages @($Package1, $Package2, $Package3)
+.OUTPUTS
+    A new instance of the ChocolateyISOPackage object
+#>
+Function New-ChocolateyISOPackage {
+    param(
+        [ChocolateyPackage] $IsoPackage,
+        [ChocolateyPackage[]] $Packages
+    )
+
+    $props = @{
+        IsoPackage = $IsoPackage
+        Packages   = $Packages
+    }
+    New-Object ChocolateyISOPackage -Property $props
+}
+
+<#
+.SYNOPSIS
     Returns a ChocolateyPackage object using the given configuration
 .DESCRIPTION
     Validates the given package configuration data and then creates a new

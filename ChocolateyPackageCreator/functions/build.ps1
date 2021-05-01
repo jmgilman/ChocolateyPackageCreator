@@ -15,6 +15,9 @@
     The ChocolateyPackage to build
 .PARAMETER OutPath
     The output directory where the final package file will be placed
+.PARAMETER PreProcess
+    An optional script block that is ran before the package process script. This
+    script block receives the same parameters as the package process script.
 .PARAMETER ChocolateyPath
     The path to the choco binary - defaults to 'choco'
 .PARAMETER KeepFiles
@@ -44,12 +47,13 @@ Function Build-ChocolateyPackage {
             Position = 2
         )]
         [string] $OutPath,
+        [scriptblock] $PreProcess = {},
         [string] $ChocolateyPath = 'choco',
         [switch] $ScanFiles,
         [switch] $KeepFiles
     )
 
-    $buildDir = Join-Path $OutPath 'build'
+    $buildDir = Join-Path $OutPath ($Package.Name + '-build')
 
     Write-Verbose ('Creating build directory at {0}...' -f $buildDir)
     New-Item -ItemType Directory $buildDir | Out-Null
@@ -93,6 +97,8 @@ Function Build-ChocolateyPackage {
         Set-Content $installerFilePath $installerFileContents | Out-Null
     }
 
+    $PreProcess.Invoke($buildDir, $Package)
+
     if ($Package.processScript) {
         Write-Verbose ('Calling process script at {0}...' -f $Package.processScript) 
         $proc = Get-Command $Package.processScript | Select-Object -ExpandProperty ScriptBlock
@@ -124,6 +130,94 @@ Function Build-ChocolateyPackage {
     
     $packageName = '{0}.{1}.nupkg' -f $Package.Manifest.Metadata.Id, $Package.Manifest.Metadata.Version
     Join-Path $OutPath $packageName
+}
+
+Function Build-ChocolateyISOPackage {
+    param(
+        [Parameter(
+            Mandatory = $true,
+            Position = 1,
+            ValueFromPipeline = $true
+        )]
+        [ChocolateyISOPackage] $Package,
+        [Parameter(
+            Mandatory = $true,
+            Position = 2
+        )]
+        [string] $OutPath,
+        [string] $ChocolateyPath = 'choco',
+        [switch] $ScanFiles,
+        [switch] $KeepFiles
+    )
+    
+    $preProcess = {
+        param($BuildPath, $Package)
+        
+        $isoFiles = Get-ChildItem $BuildPath -Filter '*.iso' -Recurse
+        foreach ($isoFile in $isoFiles) {
+            Expand-DiskImage $isoFile.FullName (Split-Path -Parent $isoFile.FullName)
+            Remove-Item $isoFile.FullName -Force | Out-Null
+        }
+    }
+
+    $packageFiles = [System.Collections.ArrayList]@()
+    Write-Verbose 'Building ISO package...'
+    $isoPackage = Build-ChocolateyPackage `
+        -Package $Package.IsoPackage `
+        -OutPath $OutPath `
+        -PreProcess $preProcess `
+        -ChocolateyPath $ChocolateyPath `
+        -ScanFiles:$ScanFiles `
+        -KeepFiles:$KeepFiles
+    $packageFiles.Add($isoPackage)
+
+    Write-Verbose 'Building sub packages...'
+    foreach ($subPackage in $Package.Packages) {
+        Write-Verbose ('Building {0}...' -f $subPackage.Name)
+        $packageFile = Build-ChocolateyPackage `
+            -Package $subPackage `
+            -OutPath $OutPath `
+            -ChocolateyPath $ChocolateyPath `
+            -ScanFiles:$ScanFiles `
+            -KeepFiles:$KeepFiles
+        $packageFiles.Add($packageFile)
+    }
+
+    $packageFiles
+}
+
+<#
+.SYNOPSIS
+    Copies the contents of a disk image to the destination path
+.DESCRIPTION
+    Mounts the disk image to the local system and then copies all files from
+    the image to the given destination path. The image is unmounted after the
+    copy operation finishes.
+.PARAMETER Path
+    The path to the disk image
+.PARAMETER Destination
+    The destination to copy the disk image files to
+.EXAMPLE
+    Expand-DiskImage 'C:\mydisk.iso' 'C:\mydisk'
+.OUTPUTS
+    None
+#>
+Function Expand-DiskImage {
+    param(
+        [string] $Path,
+        [string] $Destination
+    )
+
+    Write-Verbose ('Mounting image at {0}...' -f $Path)
+    $img = Mount-DiskImage -ImagePath $Path
+    $driveLetter = $img | Get-Volume | Select-Object -ExpandProperty DriveLetter
+    $drivePath = Get-PSDrive -Name $driveLetter | Select-Object -ExpandProperty Root
+
+    Write-Verbose ('Copying ISO files from {0} to {1}' -f $drivePath, $Destination)
+    Copy-Item (Join-Path $drivePath '*') $Destination -Recurse | Out-Null
+
+    Write-Verbose 'Unmounting image...'
+    Dismount-DiskImage -ImagePath $img.ImagePath | Out-Null
 }
 
 <#

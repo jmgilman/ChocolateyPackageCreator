@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Adds `Installer` property to configuration file for dynamically creating the ChocolateyInstall.ps1 file
+- Adds `New-ChocolateyISOPackage` and `Build-ChocolateyISOPackage` for building multiple packages against a single ISO
 - Updates Chrome example to use new `Installer` property
+- Adds Veeam example demonstrating creation of a ChocolateyISOPackage
 
 ## [0.0.6] - 2021-04-29
 

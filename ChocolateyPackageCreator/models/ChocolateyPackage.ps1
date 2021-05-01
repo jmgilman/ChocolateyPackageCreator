@@ -1,3 +1,8 @@
+class ChocolateyISOPackage {
+    [ChocolateyPackage] $IsoPackage
+    [ChocolateyPackage[]] $Packages
+}
+
 class ChocolateyPackage {
     [string] $Name
     [string] $Path
