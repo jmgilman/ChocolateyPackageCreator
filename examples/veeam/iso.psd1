@@ -15,7 +15,7 @@
         metadata = @{
             id                       = 'veeam-iso'
             title                    = 'Veeam Backup & Replication ISO'
-            version                  = '11.0.0'
+            version                  = '11.0.0.837'
             authors                  = 'Veeam'
             owners                   = 'Joshua Gilman'
             summary                  = 'Installs the contents of the Veeam Backup & Replication ISO'

@@ -22,7 +22,7 @@
         metadata = @{
             id                       = 'veeam-catalog'
             title                    = 'Veeam Backup & Replication Catalog'
-            version                  = '11.0.0'
+            version                  = '11.0.0.837'
             authors                  = 'Veeam'
             owners                   = 'Joshua Gilman'
             summary                  = 'Installs the Veeam Backup & Replication Catalog service'
