@@ -192,6 +192,7 @@ Function Build-ChocolateyISOPackage {
     Write-Verbose 'Building sub packages...'
     foreach ($subPackage in $Package.Packages) {
         Write-Verbose ('Building {0}...' -f $subPackage.Name)
+        $subPackage.Installer.InstallerPath = '..\{0}\{1}' -f $Package.Manifest.Metadata.Id, $subPackage.Installer.InstallerPath
         $packageFile = Build-ChocolateyPackage `
             -Package $subPackage `
             -OutPath $OutPath `

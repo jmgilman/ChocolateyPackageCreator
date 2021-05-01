@@ -4,7 +4,7 @@
     shim          = $False
     installer     = @{
         scriptLocation = 'tools'
-        installerPath  = 'Catalog/VeeamBackupCatalog64.msi'
+        installerPath  = 'Catalog\VeeamBackupCatalog64.msi'
         installerType  = 'msi'
         flags          = '/qn'
         arguments      = @{

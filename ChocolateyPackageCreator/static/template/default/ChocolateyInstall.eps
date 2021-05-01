@@ -41,7 +41,9 @@ foreach($argument in $arguments.GetEnumerator()) {
 }
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$fileLocation = Join-Path $scriptDir $filePath
+$packageDir = Split-Path -Parent $scriptDir
+$fileLocation = Join-Path $packageDir $filePath
+$fileLocation = (Get-Item $fileLocation).FullName # Resolve relative paths
 
 Install-ChocolateyInstallPackage `
     -PackageName $packageName `
