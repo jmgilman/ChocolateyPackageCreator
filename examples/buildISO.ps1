@@ -45,5 +45,4 @@ $packageFiles = Build-ChocolateyISOPackage `
     -ScanFiles:$hasDefender `
     -Verbose:$verbose
 
-
 $packageFiles
