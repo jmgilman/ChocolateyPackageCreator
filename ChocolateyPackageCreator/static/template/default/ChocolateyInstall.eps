@@ -1,5 +1,6 @@
 $packageName = '<%= $packageName %>'
 $filePath = '<%= $filePath %>'
+$filePath64 = '<%= $filePath64 %>'
 $fileType = '<%= $fileType %>'
 $flags = '<%= $flags %>'
 
@@ -42,11 +43,26 @@ foreach($argument in $arguments.GetEnumerator()) {
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $packageDir = Split-Path -Parent $scriptDir
+
 $fileLocation = Join-Path $packageDir $filePath
 $fileLocation = (Get-Item $fileLocation).FullName # Resolve relative paths
 
-Install-ChocolateyInstallPackage `
-    -PackageName $packageName `
-    -FileType $fileType `
-    -File $fileLocation `
-    -SilentArgs $silentArgs.Trim()
+if ($filePath64) {
+    $fileLocation64 = Join-Path $packageDir $filePath64
+    $fileLocation64 = (Get-Item $fileLocation64).FullName
+}
+
+if ($filePath64) {
+    Install-ChocolateyInstallPackage `
+        -PackageName $packageName `
+        -FileType $fileType `
+        -File $fileLocation `
+        -File64 $fileLocation64 `
+        -SilentArgs $silentArgs.Trim()
+} else {
+    Install-ChocolateyInstallPackage `
+        -PackageName $packageName `
+        -FileType $fileType `
+        -File $fileLocation `
+        -SilentArgs $silentArgs.Trim()
+}

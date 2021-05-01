@@ -557,12 +557,13 @@ Function Build-InstallerFile {
     $binding = @{
         packageName = $Package.Manifest.Metadata.Id
         filePath    = $Package.Installer.InstallerPath
+        filePath64  = $Package.Installer.InstallerPath64
         fileType    = $Package.Installer.InstallerType
         flags       = $Package.Installer.Flags
         arguments   = $Package.Installer.Arguments
     }
 
-    Invoke-EpsTemplate -Path $installerTemplate -Safe -binding $binding
+    Invoke-EpsTemplate -Path $installerTemplate -Safe -Binding $binding
 }
 
 <#
@@ -593,5 +594,5 @@ Function Build-ISOInstallerFile {
         hash        = $Package.IsoFile.Sha1
     }
 
-    Invoke-EpsTemplate -Path $installerTemplate -Safe -binding $binding
+    Invoke-EpsTemplate -Path $installerTemplate -Safe -Binding $binding
 }

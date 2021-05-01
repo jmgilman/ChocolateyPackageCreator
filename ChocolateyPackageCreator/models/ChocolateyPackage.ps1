@@ -63,6 +63,7 @@ class PackageFile {
 class PackageInstaller {
     [string] $ScriptPath
     [string] $InstallerPath
+    [string] $InstallerPath64
     [string] $InstallerType
     [string] $Flags
     [hashtable] $Arguments

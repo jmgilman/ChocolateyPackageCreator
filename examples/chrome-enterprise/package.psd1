@@ -3,11 +3,12 @@
     processScript = 'process.ps1'
     shim          = $True
     installer     = @{
-        scriptPath    = 'tools'
-        installerPath = 'GoogleChromeStandaloneEnterprise64.msi'
-        installerType = 'msi'
-        flags         = '/qn'
-        arguments     = @{}
+        scriptPath      = 'tools'
+        installerPath   = 'GoogleChromeStandaloneEnterprise64.msi'
+        installerPath64 = ''
+        installerType   = 'msi'
+        flags           = '/qn'
+        arguments       = @{}
     }
     localFiles    = @()
     remoteFiles   = @(

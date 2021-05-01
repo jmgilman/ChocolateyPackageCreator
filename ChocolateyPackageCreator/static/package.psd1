@@ -3,11 +3,12 @@
     processScript = ''
     shim          = $False
     installer     = @{
-        scriptPath    = 'tools'
-        installerPath = 'installer.msi'
-        installerType = 'msi'
-        flags         = '/qn'
-        arguments     = @{
+        scriptPath      = 'tools'
+        installerPath   = 'installer.msi'
+        installerPath64 = ''
+        installerType   = 'msi'
+        flags           = '/qn'
+        arguments       = @{
             ACCEPT_EULA = 1
         }
     }
