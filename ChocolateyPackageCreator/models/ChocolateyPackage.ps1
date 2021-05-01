@@ -1,5 +1,8 @@
 class ChocolateyISOPackage {
-    [ChocolateyPackage] $IsoPackage
+    [string] $Name
+    [string] $Path
+    [RemoteFile] $IsoFile
+    [PackageManifest] $Manifest
     [ChocolateyPackage[]] $Packages
 }
 

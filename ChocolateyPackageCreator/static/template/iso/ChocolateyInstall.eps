@@ -1,0 +1,56 @@
+Function Expand-DiskImage {
+    param(
+        [string] $Path,
+        [string] $Destination
+    )
+
+    Write-Host ('Mounting image at {0}...' -f $Path)
+    Mount-DiskImage -ImagePath $Path
+    $img = Get-DiskImage -ImagePath $Path
+    $driveLetter = $img | Get-Volume | Select-Object -ExpandProperty DriveLetter
+    $drivePath = Get-PSDrive -Name $driveLetter | Select-Object -ExpandProperty Root
+
+    Write-Host ('Copying ISO files from {0} to {1}' -f $drivePath, $Destination)
+    Copy-Item (Join-Path $drivePath '*') $Destination -Recurse | Out-Null
+
+    Write-Host 'Unmounting image...'
+    Dismount-DiskImage -ImagePath $Path | Out-Null
+}
+
+Function Invoke-Unshim {
+    param($BuildPath)
+
+    $exeFiles = Get-ChildItem $BuildPath -Filter '*.exe' -Recurse
+    foreach ($file in $exeFiles) {
+        $ignoreFile = $file.FullName + '.ignore'
+
+        Write-Host('Preventing shim of {0} with {1}...' -f $file.FullName, $ignoreFile)
+        Set-Content $ignoreFile ''
+    }
+}
+
+$packageName = '<%= $packageName %>'
+$filePath = '<%= $filePath %>'
+$url = '<%= $url %>'
+$hash = '<%= $hash %>'
+
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+$packageDir = Split-Path -parent $scriptDir
+$fileFullPath = Join-Path $packageDir $filePath
+
+Write-Host 'Downloading ISO file...'
+Get-ChocolateyWebFile `
+    -PackageName $env:ChocolateyPackageName `
+    -FileFullpath $fileFullPath `
+    -Url $url `
+    -Checksum $hash `
+    -ChecksumType sha1
+
+Write-Host 'Extracting ISO contents...'
+Expand-DiskImage $fileFullPath $packageDir
+
+Write-Host 'Removing ISO file...'
+Remove-Item $fileFullPath -Force
+
+Write-Host 'Preventing shimming of exe files...'
+Invoke-Unshim $packageDir

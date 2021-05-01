@@ -91,7 +91,7 @@ Function Build-ChocolateyPackage {
         }
 
         $installerFilePath = Join-Path $installerFolder 'ChocolateyInstall.ps1'
-        $installerFileContents = Build-InstallerFile $Package.Manifest.Metadata.Id $Package.Installer
+        $installerFileContents = Build-InstallerFile $Package
 
         Write-Verbose ('Writing installer file to {0}...' -f $installerFilePath)
         Set-Content $installerFilePath $installerFileContents | Out-Null
@@ -110,16 +110,13 @@ Function Build-ChocolateyPackage {
         Invoke-Unshim $buildDir | Out-Null
     }
 
-    $chocoArgs = @(
-        'pack',
-        $nuspecPath,
-        '--outputdirectory {0}' -f $OutPath
-    )
+    $exitCode = Invoke-ChocolateyBuild `
+        -NuspecFile $nuspecPath `
+        -BuildPath $buildDir `
+        -OutPath $OutPath `
+        -ChocolateyPath $ChocolateyPath
 
-    Write-Verbose ("Executing `"{0} {1}`" in directory {2}" -f $ChocolateyPath, ($chocoArgs -join ' '), $OutPath)
-    $proc = Start-Process $ChocolateyPath -ArgumentList $chocoArgs -WorkingDirectory $buildDir -PassThru -NoNewWindow -Wait
-
-    if ($proc.ExitCode -ne 0) {
+    if ($exitCode -ne 0) {
         throw 'The Chocolatey package process exited with non-zero exit code: {0}' -f $proc.ExitCode
     }
 
@@ -149,27 +146,48 @@ Function Build-ChocolateyISOPackage {
         [switch] $ScanFiles,
         [switch] $KeepFiles
     )
-    
-    $preProcess = {
-        param($BuildPath, $Package)
-        
-        $isoFiles = Get-ChildItem $BuildPath -Filter '*.iso' -Recurse
-        foreach ($isoFile in $isoFiles) {
-            Expand-DiskImage $isoFile.FullName (Split-Path -Parent $isoFile.FullName)
-            Remove-Item $isoFile.FullName -Force | Out-Null
-        }
+
+    Write-Verbose 'Building ISO package...'
+    $packageFiles = [System.Collections.ArrayList]@()
+    $buildDir = Join-Path $OutPath ($Package.Name + '-build')
+
+    Write-Verbose ('Creating build directory at {0}...' -f $buildDir)
+    New-Item -ItemType Directory $buildDir | Out-Null
+
+    $nuspecPath = (Join-Path $buildDir ($Package.Manifest.Metadata.Id + '.nuspec'))
+
+    Write-Verbose ('Creating NuSpec file at {0}...' -f $nuspecPath)
+    $xml = New-ChocolateyNuSpec $Package.Manifest
+    $xml.Save($nuspecPath)
+
+    $installerFolder = Join-Path $buildDir 'tools'
+    if (!(Test-Path $installerFolder)) {
+        New-Item -ItemType Directory $installerFolder | Out-Null
     }
 
-    $packageFiles = [System.Collections.ArrayList]@()
-    Write-Verbose 'Building ISO package...'
-    $isoPackage = Build-ChocolateyPackage `
-        -Package $Package.IsoPackage `
+    $installerFilePath = Join-Path $installerFolder 'ChocolateyInstall.ps1'
+    $installerFileContents = Build-ISOInstallerFile $Package
+
+    Write-Verbose ('Writing installer file to {0}...' -f $installerFilePath)
+    Set-Content $installerFilePath $installerFileContents | Out-Null
+
+    $exitCode = Invoke-ChocolateyBuild `
+        -NuspecFile $nuspecPath `
+        -BuildPath $buildDir `
         -OutPath $OutPath `
-        -PreProcess $preProcess `
-        -ChocolateyPath $ChocolateyPath `
-        -ScanFiles:$ScanFiles `
-        -KeepFiles:$KeepFiles
-    $packageFiles.Add($isoPackage)
+        -ChocolateyPath $ChocolateyPath
+
+    if ($exitCode -ne 0) {
+        throw 'The Chocolatey package process exited with non-zero exit code: {0}' -f $proc.ExitCode
+    }
+
+    if (!$KeepFiles) {
+        Write-Verbose 'Cleaning up...'
+        Remove-Item $buildDir -Recurse -Force | Out-Null
+    }
+    
+    $packageName = '{0}.{1}.nupkg' -f $Package.Manifest.Metadata.Id, $Package.Manifest.Metadata.Version
+    $packageFiles.Add((Join-Path $OutPath $packageName))
 
     Write-Verbose 'Building sub packages...'
     foreach ($subPackage in $Package.Packages) {
@@ -186,39 +204,6 @@ Function Build-ChocolateyISOPackage {
     $packageFiles
 }
 
-<#
-.SYNOPSIS
-    Copies the contents of a disk image to the destination path
-.DESCRIPTION
-    Mounts the disk image to the local system and then copies all files from
-    the image to the given destination path. The image is unmounted after the
-    copy operation finishes.
-.PARAMETER Path
-    The path to the disk image
-.PARAMETER Destination
-    The destination to copy the disk image files to
-.EXAMPLE
-    Expand-DiskImage 'C:\mydisk.iso' 'C:\mydisk'
-.OUTPUTS
-    None
-#>
-Function Expand-DiskImage {
-    param(
-        [string] $Path,
-        [string] $Destination
-    )
-
-    Write-Verbose ('Mounting image at {0}...' -f $Path)
-    $img = Mount-DiskImage -ImagePath $Path
-    $driveLetter = $img | Get-Volume | Select-Object -ExpandProperty DriveLetter
-    $drivePath = Get-PSDrive -Name $driveLetter | Select-Object -ExpandProperty Root
-
-    Write-Verbose ('Copying ISO files from {0} to {1}' -f $drivePath, $Destination)
-    Copy-Item (Join-Path $drivePath '*') $Destination -Recurse | Out-Null
-
-    Write-Verbose 'Unmounting image...'
-    Dismount-DiskImage -ImagePath $img.ImagePath | Out-Null
-}
 
 <#
 .SYNOPSIS
@@ -320,6 +305,25 @@ Function Invoke-WindowsDefenderScan {
     )
 
     $proc = Start-Process $mpCmd -ArgumentList $mpArgs -PassThru -NoNewWindow -Wait
+    $proc.ExitCode
+}
+
+Function Invoke-ChocolateyBuild {
+    param(
+        [string] $NuspecFile,
+        [string] $BuildPath,
+        [string] $OutPath,
+        [string] $ChocolateyPath = 'choco'
+    )
+
+    $chocoArgs = @(
+        'pack',
+        $NuspecFile,
+        '--outputdirectory {0}' -f $OutPath
+    )
+
+    Write-Verbose ("Executing `"{0} {1}`" in directory {2}" -f $ChocolateyPath, ($chocoArgs -join ' '), $OutPath)
+    $proc = Start-Process $ChocolateyPath -ArgumentList $chocoArgs -WorkingDirectory $BuildPath -PassThru -NoNewWindow -Wait
     $proc.ExitCode
 }
 
@@ -477,35 +481,62 @@ Function Invoke-Unshim {
 
 <#
 .SYNOPSIS
-    Returns the contents of a ChocolateyInstall.ps1 file using the PackageInstaller
+    Returns the contents of a ChocolateyInstall.ps1 file using the given ChocolateyPackage
 .DESCRIPTION
     Using the built-in template, dynamically generates the contents of a 
-    ChocolateyInstall.ps1 file for the given PackageInstaller. The contents of
+    ChocolateyInstall.ps1 file for the given ChocolateyPackage. The contents of
     the file are returned. 
-.PARAMETER PackageName
-    The name of the Chocolatey Package
-.PARAMETER Installer
-    The PackageInstaller from the package
+.PARAMETER Package
+    The Chocolatey package to create the installer for
 .EXAMPLE
-    Set-Content 'ChocolateyInstall.ps1' (Build-InstallerFile 'mypackage' $Package.Installer)
+    Set-Content 'ChocolateyInstall.ps1' (Build-InstallerFile $Package)
 .OUTPUTS
     The contents of the ChocolateyInstall.ps1 file
 #>
 Function Build-InstallerFile {
     param(
-        [string] $PackageName,
-        [PackageInstaller] $Installer
+        [ChocolateyPackage] $Package
     )
 
     $staticFilePath = Join-Path $PSScriptRoot '..\static'
-    $installerTemplate = Join-Path $staticFilePath 'template\ChocolateyInstall.eps'
-
+    $installerTemplate = Join-Path $staticFilePath 'template\default\ChocolateyInstall.eps'
     $binding = @{
-        packageName = $PackageName
-        filePath    = $Installer.InstallerPath
-        fileType    = $Installer.InstallerType
-        flags       = $Installer.Flags
-        arguments   = $Installer.Arguments
+        packageName = $Package.Manifest.Metadata.Id
+        filePath    = $Package.Installer.InstallerPath
+        fileType    = $Package.Installer.InstallerType
+        flags       = $Package.Installer.Flags
+        arguments   = $Package.Installer.Arguments
+    }
+
+    Invoke-EpsTemplate -Path $installerTemplate -Safe -binding $binding
+}
+
+<#
+.SYNOPSIS
+    Returns the contents of a ChocolateyInstall.ps1 file using the given ChocolateyISOPackage
+.DESCRIPTION
+    Using the built-in template, dynamically generates the contents of a 
+    ChocolateyInstall.ps1 file for the given ChocolateyISOPackage. The contents 
+    of the file are returned. 
+.PARAMETER Package
+    The Chocolatey ISO package to create the installer for
+.EXAMPLE
+    Set-Content 'ChocolateyInstall.ps1' (Build-ISOInstallerFile $Package)
+.OUTPUTS
+    The contents of the ChocolateyInstall.ps1 file
+#>
+Function Build-ISOInstallerFile {
+    param(
+        [ChocolateyISOPackage] $Package
+    )
+
+    $staticFilePath = Join-Path $PSScriptRoot '..\static'
+    $installerTemplate = Join-Path $staticFilePath 'template\iso\ChocolateyInstall.eps'
+    $binding = @{
+        packageName = $Package.Manifest.Metadata.Id
+        filePath    = $Package.IsoFile.ImportPath
+        url         = $Package.IsoFile.Url
+        hash        = $Package.IsoFile.Sha1
     }
 
     Invoke-EpsTemplate -Path $installerTemplate -Safe -binding $binding

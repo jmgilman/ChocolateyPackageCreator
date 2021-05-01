@@ -1,17 +1,11 @@
 @{
-    name          = 'veeam-iso'
-    processScript = ''
-    shim          = $False
-    installer     = @{}
-    localFiles    = @()
-    remoteFiles   = @(
-        @{
-            url        = 'https://download2.veeam.com/VBR/v11/VeeamBackup&Replication_11.0.0.837_20210220.iso'
-            sha1       = ''
-            importPath = 'tools/veeam.iso'
-        }
-    )
-    manifest      = @{
+    name     = 'veeam-iso'
+    isoFile  = @{
+        url        = 'https://download2.veeam.com/VBR/v11/VeeamBackup&Replication_11.0.0.837_20210220.iso'
+        sha1       = 'D6E9F7DB3BA1A4782028773562AA036365724AE4'
+        importPath = 'veeam.iso'
+    }
+    manifest = @{
         metadata = @{
             id                       = 'veeam-iso'
             title                    = 'Veeam Backup & Replication ISO'

@@ -19,9 +19,7 @@ $verbose = $PSCmdlet.MyInvocation.BoundParameters['Verbose']
 $hasDefender = Test-Path (Join-Path $env:ProgramFiles 'Windows Defender/MpCmdRun.exe' -ErrorAction SilentlyContinue)
 $hasDefender = $False
 
-$isoConfig = Import-PowerShellDataFile (Join-Path $PackagePath 'iso.psd1')
-$isoPackage = New-ChocolateyPackage $PackagePath $isoConfig
-
+# Load all sub packages
 $packages = [System.Collections.ArrayList]@()
 $packagesPath = Join-Path $PackagePath 'packages'
 foreach ($packageFile in (Get-ChildItem $packagesPath -Filter '*.psd1' -Recurse)) {
@@ -29,9 +27,12 @@ foreach ($packageFile in (Get-ChildItem $packagesPath -Filter '*.psd1' -Recurse)
     $packages.Add((New-ChocolateyPackage $packageFile.Parent.FullName $packageConfig))
 }
 
-$chocoIsoPackage = New-ChocolateyISOPackage $isoPackage $packages
+# Load ISO package
+$isoConfig = Import-PowerShellDataFile (Join-Path $PackagePath 'iso.psd1')
+$isoPackage = New-ChocolateyISOPackage $PackagePath $isoConfig $packages
+
 $packageFiles = Build-ChocolateyISOPackage `
-    -Package $chocoIsoPackage `
+    -Package $IsoPackage `
     -OutPath $OutPath `
     -ScanFiles:$hasDefender `
     -Verbose:$verbose

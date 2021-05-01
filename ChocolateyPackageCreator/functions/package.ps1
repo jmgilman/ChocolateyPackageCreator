@@ -4,29 +4,47 @@
 .DESCRIPTION
     Returns a ChocolateyISOPackage object using the given packages. Each package
     is validated before it is created. 
-.PARAMETER IsoPackage
-    The package which contains the ISO file contents
+.PARAMETER PackagePath
+    The full file path to where the ISO package files are located
+.PARAMETER PackageConfig
+    The package configuration data to use when creating the ChocolateyISOPackage
 .PARAMETER Packages
     A list of packages which are subordinate and require use of the ISO file
     contents
 .EXAMPLE
     $package = New-ChocolateyISOPackage `
-        -IsoPackage $IsoPackage `
+        -PackagePath 'C:\my\package' `
+        -PackageConfig $myConfig `
         -Packages @($Package1, $Package2, $Package3)
 .OUTPUTS
     A new instance of the ChocolateyISOPackage object
 #>
 Function New-ChocolateyISOPackage {
     param(
-        [ChocolateyPackage] $IsoPackage,
+        [string] $PackagePath,
+        [hashtable] $PackageConfig,
         [ChocolateyPackage[]] $Packages
     )
 
-    $props = @{
-        IsoPackage = $IsoPackage
-        Packages   = $Packages
+    # Clone config to prevent modifying passed in hash table
+    $config = $PackageConfig.Clone()
+
+    # Add package path and packages and then validate configuration
+    $config.Add('path', $PackagePath)
+    $config.Add('packages', $Packages)
+    Test-ISOPackageConfiguration -Configuration $config
+
+    $config.IsoFile = New-Object RemoteFile -Property $config.IsoFile
+    $config.manifest.metadata.dependencies = $config.manifest.metadata.dependencies.ForEach( {
+            New-Object PackageDependency -Property $_
+        })
+    $config.manifest = @{
+        metadata = New-Object PackageMetadata -Property $config.manifest.metadata
+        files    = $config.manifest.files.ForEach( {
+                New-Object PackageFile -Property $_
+            })
     }
-    New-Object ChocolateyISOPackage -Property $props
+    New-Object ChocolateyISOPackage -Property $config
 }
 
 <#
@@ -121,6 +139,36 @@ Function New-ChocolateyPackageConfig {
     $packageFiles = Join-Path $PSScriptRoot '..\static'
     Write-Verbose ('Copying package files from {0} to {1}...' -f $packageFiles, $PackagePath)
     Copy-Item (Join-Path $packageFiles '*') $PackagePath -Recurse | Out-Null
+}
+
+Function Test-ISOPackageConfiguration {
+    param(
+        [hashtable] $Configuration
+    )
+    Test-ConfigSection -Object ([ChocolateyISOPackage]::new()) -Properties $Configuration.Keys
+    foreach ($property in $Configuration.GetEnumerator()) {
+        switch ($property.Name) {
+            IsoFile {
+                Test-ConfigSection -Object ([RemoteFile]::new()) -Properties $property.Value.Keys
+            }
+            Manifest {
+                Test-ConfigSection -Object ([PackageManifest]::new()) -Properties $property.Value.Keys
+
+                if (!($property.Value.metadata -is [hashtable])) {
+                    throw 'Error validating package configuration: metadata property must be a hashtable'
+                }
+                Test-ConfigSection -Object ([PackageMetadata]::new()) -Properties $property.Value.metadata.Keys
+
+                foreach ($dependency in $property.Value.metadata.dependencies) {
+                    Test-ConfigSection -Object ([PackageDependency]::new()) -Properties $dependency.Keys
+                }
+
+                foreach ($file in $property.Value.files) {
+                    Test-ConfigSection -Object ([PackageFile]::new()) -Properties $file.Keys
+                }
+            }
+        }
+    }
 }
 
 Function Test-PackageConfiguration {
