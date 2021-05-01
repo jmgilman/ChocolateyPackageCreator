@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Adds `Installer` property to configuration file for dynamically creating the ChocolateyInstall.ps1 file
 - Adds `New-ChocolateyISOPackage` and `Build-ChocolateyISOPackage` for building multiple packages against a single ISO
+- Adds `Tool` parameter to `Publish-ChocolateyPackage` to support pushing via the NuGet CLI tool
 - Updates Chrome example to use new `Installer` property
 - Adds Veeam example demonstrating creation of a ChocolateyISOPackage
 

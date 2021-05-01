@@ -2,6 +2,8 @@
 param(
     [string] $Repository,
     [string] $PackageFile,
+    [ValidateSet('Chocolatey', 'NuGet')]
+    [string] $Tool = 'Chocolatey',
     [switch] $Force
 )
 
@@ -17,5 +19,6 @@ Publish-ChocolateyPackage `
     -Repository $Repository `
     -ApiKey $env:API_KEY `
     -PackageFile $PackageFile `
+    -Tool $Tool `
     -Force:$Force `
     -Verbose:$verbose
