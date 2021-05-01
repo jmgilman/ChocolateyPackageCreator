@@ -85,7 +85,7 @@ Function Build-ChocolateyPackage {
     }
 
     if ($Package.Installer) {
-        $installerFolder = Join-Path $buildDir $Package.Installer.ScriptLocation
+        $installerFolder = Join-Path $buildDir $Package.Installer.ScriptPath
         if (!(Test-Path $installerFolder)) {
             New-Item -ItemType Directory $installerFolder | Out-Null
         }
@@ -129,6 +129,35 @@ Function Build-ChocolateyPackage {
     Join-Path $OutPath $packageName
 }
 
+<#
+.SYNOPSIS
+    Compiles and builds the chocolatey ISO package defined in the ChocolateyISOPackage
+.DESCRIPTION
+    Using the given ChocolateyISOPackage object, performs the following:
+        * Builds the ISO package using the static installer file
+        * Iterates through and builds all subpackages, modifying their installer
+          path to point to the ISO package folder
+    The path to all built packages are returned. Note that during the build
+    process a temporary directory is created in the OutPath directory to hold
+    files and appropriate write permissions are required.
+.PARAMETER Package
+    The ChocolateyISOPackage to build
+.PARAMETER OutPath
+    The output directory where the final package files will be placed
+.PARAMETER ChocolateyPath
+    The path to the choco binary - defaults to 'choco'
+.PARAMETER KeepFiles
+    If set, does not delete the package files gathered during the build process.
+    This is usually useful for debugging packages.
+.PARAMETER ScanFiles
+    Whether or not to scan any downloaded files using Windows Defender
+.EXAMPLE
+    Build-ChocolateyISOPackae `
+        -Package $myPackage `
+        -OutPath C:\path\to\package\output
+.OUTPUTS
+    An array of fully qualified paths pointing to all built package files
+#>
 Function Build-ChocolateyISOPackage {
     param(
         [Parameter(
@@ -187,7 +216,7 @@ Function Build-ChocolateyISOPackage {
     }
     
     $packageName = '{0}.{1}.nupkg' -f $Package.Manifest.Metadata.Id, $Package.Manifest.Metadata.Version
-    $packageFiles.Add((Join-Path $OutPath $packageName))
+    $packageFiles.Add((Join-Path $OutPath $packageName)) | Out-Null
 
     Write-Verbose 'Building sub packages...'
     foreach ($subPackage in $Package.Packages) {
@@ -199,7 +228,7 @@ Function Build-ChocolateyISOPackage {
             -ChocolateyPath $ChocolateyPath `
             -ScanFiles:$ScanFiles `
             -KeepFiles:$KeepFiles
-        $packageFiles.Add($packageFile)
+        $packageFiles.Add($packageFile) | Out-Null
     }
 
     $packageFiles
@@ -309,6 +338,30 @@ Function Invoke-WindowsDefenderScan {
     $proc.ExitCode
 }
 
+
+<#
+.SYNOPSIS
+    Runs choco pack on the given NuSpec file
+.DESCRIPTION
+    Executes the Chocolatey binary, passing arguments for building the given
+    NuSpec file at the given build path. The OutPath is also passed and
+    instructs Chocolatey where to place the build artifacts.
+.PARAMETER NuSpecFile
+    The path to the NuSpec file
+.PARAMETER BuildPath
+    The path to the package contents
+.PARAMETER OutPath
+    The path where Chocolatey will output build artifacts
+.PARAMETER ChocolateyPath
+    The path to the choco binary - defaults to 'choco'
+.EXAMPLE
+    $exitCode = Invoke-ChocolateyBuild `
+        -NuSpecFile 'C:\my\package.nuspec' `
+        -BuildPath 'C:\my\' `
+        -OutPath 'C:\my\bin'
+.OUTPUTS
+    The exit code of the Chocolatey build process
+#>
 Function Invoke-ChocolateyBuild {
     param(
         [string] $NuspecFile,

@@ -119,7 +119,7 @@ Function New-ChocolateyPackage {
     Creates an example package configuration file along with an example process
     and Chocolatey install file at the given path. This is the easiest way to
     get started with making a new package.
-.PARAMETER PackagePath
+.PARAMETER OutPath
     The full file path to where the package files will be created
 .EXAMPLE
     New-ChocolateyPackageConfig C:\my\package
@@ -128,17 +128,17 @@ Function New-ChocolateyPackage {
 #>
 Function New-ChocolateyPackageConfig {
     param(
-        [string] $PackagePath
+        [string] $OutPath
     )
 
-    if (!(Test-Path $PackagePath)) {
-        Write-Verbose ('Creating {0}...' -f $PackagePath)
-        New-Item -ItemType Directory $PackagePath | Out-Null
+    if (!(Test-Path $OutPath)) {
+        Write-Verbose ('Creating {0}...' -f $OutPath)
+        New-Item -ItemType Directory $OutPath | Out-Null
     }
 
-    $packageFiles = Join-Path $PSScriptRoot '..\static'
-    Write-Verbose ('Copying package files from {0} to {1}...' -f $packageFiles, $PackagePath)
-    Copy-Item (Join-Path $packageFiles '*') $PackagePath -Recurse | Out-Null
+    $packageFile = Join-Path $PSScriptRoot '..\static\package.psd1'
+    Write-Verbose ('Copying package file from {0} to {1}...' -f $packageFile, $OutPath)
+    Copy-Item $packageFile $OutPath | Out-Null
 }
 
 Function Test-ISOPackageConfiguration {

@@ -1,14 +1,16 @@
 @{
     name          = 'mypackage'
-    processScript = 'process.ps1'
+    processScript = ''
     shim          = $False
-    installer     = @{}
-    localFiles    = @(
-        @{
-            localPath  = 'files/ChocolateyInstall.ps1'
-            importPath = 'tools/ChocolateyInstall.ps1'
+    installer     = @{
+        scriptPath    = 'tools'
+        installerPath = 'installer.msi'
+        installerType = 'msi'
+        flags         = '/qn'
+        arguments     = @{
+            ACCEPT_EULA = 1
         }
-    )
+    }
     remoteFiles   = @(
         @{
             url        = 'https://my.download.com/installer.msi'

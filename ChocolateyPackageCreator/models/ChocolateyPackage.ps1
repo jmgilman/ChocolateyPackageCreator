@@ -61,7 +61,7 @@ class PackageFile {
 }
 
 class PackageInstaller {
-    [string] $ScriptLocation
+    [string] $ScriptPath
     [string] $InstallerPath
     [string] $InstallerType
     [string] $Flags

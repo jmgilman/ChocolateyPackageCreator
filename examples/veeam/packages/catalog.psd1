@@ -3,11 +3,11 @@
     processScript = ''
     shim          = $False
     installer     = @{
-        scriptLocation = 'tools'
-        installerPath  = 'Catalog\VeeamBackupCatalog64.msi'
-        installerType  = 'msi'
-        flags          = '/qn'
-        arguments      = @{
+        scriptPath    = 'tools'
+        installerPath = 'Catalog\VeeamBackupCatalog64.msi'
+        installerType = 'msi'
+        flags         = '/qn'
+        arguments     = @{
             ACCEPT_THIRDPARTY_LICENSES = '1'
             INSTALLDIR                 = ''
             VM_CATALOGPATH             = ''
