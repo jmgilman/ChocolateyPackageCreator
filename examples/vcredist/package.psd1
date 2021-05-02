@@ -1,7 +1,7 @@
 @{
     name          = 'vcredist'
     processScript = ''
-    shim          = $True
+    shim          = $False
     installer     = @{
         scriptPath      = 'tools'
         installerPath   = 'tools/VC_redist.x86.exe'
