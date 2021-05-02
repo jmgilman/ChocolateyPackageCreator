@@ -8,7 +8,7 @@ $> Install-Module ChocolateyPackageCreator
 
 ## Usage
 
-Create a new package template:
+For a more in-depth guide, see [Getting Started](https://github.com/jmgilman/ChocolateyPackageCreator/blob/master/docs/getting_started.md). Create a new package template:
 ```powershell
 $> New-ChocolateyPackageConfig C:\my\package
 ```
@@ -18,11 +18,9 @@ you are trying to create. For more in-depth documentation and examples, see the
 `examples` directory. When ready, build the package:
 
 ```powershell
-$> $configFile = 'C:\my\package\package.psd1'
-$> $outPath = 'C:\my\package\bin'
-$> $config = Import-PowerShellDataFile $configFile
+$> $config = Import-PowerShellDataFile 'C:\my\package\package.psd1'
 $> $packagePath = New-ChocolateyPackage (Split-Path $configFile) $config | 
-    Build-ChocolateyPackage -OutPath $outPath
+    Build-ChocolateyPackage -OutPath 'C:\my\package\bin'
 ```
 
 And then publish it:
