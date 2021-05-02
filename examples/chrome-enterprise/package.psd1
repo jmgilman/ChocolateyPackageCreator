@@ -4,7 +4,7 @@
     shim          = $True
     installer     = @{
         scriptPath      = 'tools'
-        installerPath   = 'GoogleChromeStandaloneEnterprise64.msi'
+        installerPath   = 'tools\GoogleChromeStandaloneEnterprise64.msi'
         installerPath64 = ''
         installerType   = 'msi'
         exitCodes       = @(0)
