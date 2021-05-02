@@ -1,33 +1,43 @@
 @{
-    name          = 'veeam-catalog'
+    name          = 'veeam-server'
     processScript = ''
     shim          = $False
     installer     = @{
         scriptPath      = 'tools'
-        installerPath   = 'Catalog\VeeamBackupCatalog64.msi'
+        installerPath   = 'Backup\Server.x64.msi'
         installerPath64 = ''
         installerType   = 'msi'
         exitCodes       = @(0, 1638, 1641, 3010)
         flags           = '/qn /norestart'
         arguments       = @{
-            ACCEPT_THIRDPARTY_LICENSES = '1'
-            INSTALLDIR                 = ''
-            VM_CATALOGPATH             = ''
-            VBRC_SERVICE_USER          = ''
-            VBRC_SERVICE_PASSWORD      = ''
-            VBRC_SERVICE_PORT          = ''
+            ACCEPTEULA                   = 'yes'
+            ACCEPT_THIRDPARTY_LICENSES   = '1'
+            INSTALLDIR                   = ''
+            VBR_LICENSE_FILE             = ''
+            VBR_SERVICE_USER             = ''
+            VBR_SERVICE_PASSWORD         = ''
+            VBR_SERVICE_PORT             = ''
+            VBR_SECURE_CONNECTIONS_PORT  = ''
+            VBR_SQLSERVER_SERVER         = 'localhost\SQLEXPRESS'
+            VBR_SQLSERVER_DATABASE       = ''
+            VBR_SQLSERVER_AUTHENTICATION = ''
+            VBR_SQLSERVER_USERNAME       = ''
+            VBR_SQLSERVER_PASSWORD       = ''
+            VBR_IRCACHE                  = ''
+            VBR_CHECK_UPDATES            = '0'
+            VBR_AUTO_UPGRADE             = '1'
         }
     }
     localFiles    = @()
     remoteFiles   = @()
     manifest      = @{
         metadata = @{
-            id                       = 'veeam-catalog'
-            title                    = 'Veeam Backup & Replication Catalog'
+            id                       = 'veeam-server'
+            title                    = 'Veeam Backup & Replication Server'
             version                  = '11.0.0.837'
             authors                  = 'Veeam'
             owners                   = 'Joshua Gilman'
-            summary                  = 'Installs the Veeam Backup & Replication Catalog service'
+            summary                  = 'Installs the Veeam Backup & Replication Server'
             description              = 'Veeam Backup & Replication is a backup solution developed for VMware vSphere and Microsoft Hyper-V virtual environments. Veeam Backup & Replication provides a set of features for performing data protection and disaster recovery tasks.'
             projectUrl               = 'http://www.veeam.com/'
             packageSourceUrl         = 'https://github.com/jmgilman/ChocolateyPackageManager'
@@ -41,7 +51,23 @@
                     version = '[11.0.0.837]'
                 },
                 @{
+                    id      = 'veeam-catalog'
+                    version = '[11.0.0.837]'
+                },
+                @{
                     id      = 'dotnet-472'
+                    version = ''
+                },
+                @{
+                    id      = 'ms-reportviewer2015'
+                    version = ''
+                },
+                @{
+                    id      = 'sql-2014-smo'
+                    version = ''
+                }
+                @{
+                    id      = 'vcredist'
                     version = ''
                 }
             )

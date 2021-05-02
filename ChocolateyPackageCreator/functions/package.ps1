@@ -8,6 +8,8 @@
     The full file path to where the ISO package files are located
 .PARAMETER PackageConfig
     The package configuration data to use when creating the ChocolateyISOPackage
+.PARAMETER MetaPackage
+    The meta package which ties the ISO and all sub-packages together
 .PARAMETER Packages
     A list of packages which are subordinate and require use of the ISO file
     contents
@@ -15,6 +17,7 @@
     $package = New-ChocolateyISOPackage `
         -PackagePath 'C:\my\package' `
         -PackageConfig $myConfig `
+        -MetaPackage $MetaPackae `
         -Packages @($Package1, $Package2, $Package3)
 .OUTPUTS
     A new instance of the ChocolateyISOPackage object
@@ -23,14 +26,16 @@ Function New-ChocolateyISOPackage {
     param(
         [string] $PackagePath,
         [hashtable] $PackageConfig,
+        [ChocolateyPackage] $MetaPackage,
         [ChocolateyPackage[]] $Packages
     )
 
     # Clone config to prevent modifying passed in hash table
     $config = $PackageConfig.Clone()
 
-    # Add package path and packages and then validate configuration
+    # Add package path, meta package, and packages, then validate configuration
     $config.Add('path', $PackagePath)
+    $config.Add('metapackage', $MetaPackage)
     $config.Add('packages', $Packages)
     Test-ISOPackageConfiguration -Configuration $config
 

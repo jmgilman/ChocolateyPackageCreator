@@ -4,6 +4,7 @@ $filePath64 = '<%= $filePath64 %>'
 $fileType = '<%= $fileType %>'
 $flags = '<%= $flags %>'
 $exitCodes = @(<%= $exitCodes -Join ', ' %>)
+$logLocation = '{0}\{1}.{2}.log' -f $env:TEMP,$env:ChocolateyPackageName,$env:ChocolateyPackageVersion
 
 <% if ($arguments.Count -eq 0) { -%>
 $arguments = @{}
@@ -31,6 +32,7 @@ if (($params.Count -gt 0) -and ($arguments.Count -eq 0)) {
 
 # Build argument string
 $silentArgs = $flags
+$silentArgs += ' /l*v "{0}"' -f $logLocation
 foreach($argument in $arguments.GetEnumerator()) {
     if ($argument.Value) {
         if ($fileType -eq 'exe') {
@@ -53,6 +55,7 @@ if ($filePath64) {
     $fileLocation64 = (Get-Item $fileLocation64).FullName
 }
 
+Write-Host ('Log location is {0}' -f $logLocation)
 if ($filePath64) {
     Install-ChocolateyInstallPackage `
         -PackageName $packageName `

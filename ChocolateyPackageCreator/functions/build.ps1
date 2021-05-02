@@ -231,6 +231,16 @@ Function Build-ChocolateyISOPackage {
         $packageFiles.Add($packageFile) | Out-Null
     }
 
+    Write-Verbose 'Building meta package...'
+    Write-Verbose ('Building {0}...' -f $Package.MetaPackage.Name)
+    $metaPackageFile = Build-ChocolateyPackage `
+        -Package $Package.MetaPackage `
+        -OutPath $OutPath `
+        -ChocolateyPath $ChocolateyPath `
+        -ScanFiles:$ScanFiles `
+        -KeepFiles:$KeepFiles
+    $packageFiles.Add($metaPackageFile) | Out-Null
+
     $packageFiles
 }
 
