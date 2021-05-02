@@ -64,14 +64,14 @@ Function Build-ChocolateyPackage {
     $xml = New-ChocolateyNuSpec $Package.Manifest
     $xml.Save($nuspecPath)
 
-    if ($Package.RemoteFiles) {
+    if ($Package.RemoteFiles.Count -gt 0) {
         Write-Verbose 'Downloading remote files...'
         foreach ($remoteFile in $Package.RemoteFiles) {
             $remoteFile | Get-RemoteFile -OutPath $buildDir -Scan:$ScanFiles | Out-Null
         }
     }
 
-    if ($Package.LocalFiles) {
+    if ($Package.LocalFiles.Count -gt 0) {
         Write-Verbose 'Copying local files...'
         foreach ($localFile in $Package.LocalFiles) {
             $outFile = Join-Path $buildDir $localFile.ImportPath
@@ -84,7 +84,8 @@ Function Build-ChocolateyPackage {
         }
     }
 
-    if ($Package.Installer) {
+    if ($Package.Installer.InstallerPath) {
+        Write-Verbose ('The installer is: {0}' -f (ConvertTo-Json $Package.Installer))
         $installerFolder = Join-Path $buildDir $Package.Installer.ScriptPath
         if (!(Test-Path $installerFolder)) {
             New-Item -ItemType Directory $installerFolder | Out-Null
