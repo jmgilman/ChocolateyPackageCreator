@@ -7,6 +7,7 @@
         installerPath   = 'Catalog\VeeamBackupCatalog64.msi'
         installerPath64 = ''
         installerType   = 'msi'
+        exitCodes       = @(0)
         flags           = '/qn'
         arguments       = @{
             ACCEPT_THIRDPARTY_LICENSES = '1'

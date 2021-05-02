@@ -7,6 +7,7 @@
         installerPath   = 'installer.msi'
         installerPath64 = ''
         installerType   = 'msi'
+        exitCodes       = @(0)
         flags           = '/qn'
         arguments       = @{
             ACCEPT_EULA = 1

@@ -7,6 +7,7 @@
         installerPath   = 'tools/VC_redist.x86.exe'
         installerPath64 = 'tools/VC_redist.x64.exe'
         installerType   = 'exe'
+        exitCodes       = @(0, 1638, 3010)
         flags           = '/quiet /norestart'
         arguments       = @{}
     }

@@ -7,6 +7,7 @@
         installerPath   = 'GoogleChromeStandaloneEnterprise64.msi'
         installerPath64 = ''
         installerType   = 'msi'
+        exitCodes       = @(0)
         flags           = '/qn'
         arguments       = @{}
     }

@@ -559,6 +559,7 @@ Function Build-InstallerFile {
         filePath    = $Package.Installer.InstallerPath
         filePath64  = $Package.Installer.InstallerPath64
         fileType    = $Package.Installer.InstallerType
+        exitCodes   = $Package.Installer.ExitCodes
         flags       = $Package.Installer.Flags
         arguments   = $Package.Installer.Arguments
     }

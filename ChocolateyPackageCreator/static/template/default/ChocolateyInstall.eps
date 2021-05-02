@@ -3,6 +3,7 @@ $filePath = '<%= $filePath %>'
 $filePath64 = '<%= $filePath64 %>'
 $fileType = '<%= $fileType %>'
 $flags = '<%= $flags %>'
+$exitCodes = @(<%= $exitCodes -Join ', ' %>)
 
 <% if ($arguments.Count -eq 0) { -%>
 $arguments = @{}
@@ -58,11 +59,13 @@ if ($filePath64) {
         -FileType $fileType `
         -File $fileLocation `
         -File64 $fileLocation64 `
-        -SilentArgs $silentArgs.Trim()
+        -SilentArgs $silentArgs.Trim() `
+        -ValidExitCodes $exitCodes
 } else {
     Install-ChocolateyInstallPackage `
         -PackageName $packageName `
         -FileType $fileType `
         -File $fileLocation `
-        -SilentArgs $silentArgs.Trim()
+        -SilentArgs $silentArgs.Trim() `
+        -ValidExitCodes $exitCodes
 }

@@ -65,6 +65,7 @@ class PackageInstaller {
     [string] $InstallerPath
     [string] $InstallerPath64
     [string] $InstallerType
+    [int[]] $ExitCodes
     [string] $Flags
     [hashtable] $Arguments
 }
