@@ -7,12 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2021-05-04
+
 ### Added
 - Adds `Installer` property to configuration file for dynamically creating the ChocolateyInstall.ps1 file
 - Adds `New-ChocolateyISOPackage` and `Build-ChocolateyISOPackage` for building multiple packages against a single ISO
 - Adds `Tool` parameter to `Publish-ChocolateyPackage` to support pushing via the NuGet CLI tool
 - Updates Chrome example to use new `Installer` property
 - Adds Veeam example demonstrating creation of a ChocolateyISOPackage
+- Adds getting started guide and supporting documentation for the ISO package format
 
 ## [0.0.6] - 2021-04-29
 
@@ -59,7 +62,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[unreleased]: https://github.com/jmgilman/ChocolateyPackageCreator/compare/v0.0.6...HEAD
+[unreleased]: https://github.com/jmgilman/ChocolateyPackageCreator/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/jmgilman/ChocolateyPackageCreator/compare/v0.0.6...v0.1.0
 [0.0.6]: https://github.com/jmgilman/ChocolateyPackageCreator/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/jmgilman/ChocolateyPackageCreator/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/jmgilman/ChocolateyPackageCreator/compare/v0.0.3...v0.0.4
