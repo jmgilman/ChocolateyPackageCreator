@@ -24,7 +24,7 @@ Function Invoke-Unshim {
     foreach ($file in $exeFiles) {
         $ignoreFile = $file.FullName + '.ignore'
 
-        Write-Host('Preventing shim of {0} with {1}...' -f $file.FullName, $ignoreFile)
+        Write-Verbose('Preventing shim of {0} with {1}...' -f $file.FullName, $ignoreFile)
         Set-Content $ignoreFile ''
     }
 }
@@ -38,7 +38,8 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $packageDir = Split-Path -parent $scriptDir
 $fileFullPath = Join-Path $packageDir $filePath
 
-Write-Host 'Downloading ISO file...'
+Write-Verbose ('Package directory is {0}' -f $packageDir)
+Write-Host ('Downloading ISO file to {0}...' -f $fileFullPath)
 Get-ChocolateyWebFile `
     -PackageName $env:ChocolateyPackageName `
     -FileFullpath $fileFullPath `
@@ -46,7 +47,7 @@ Get-ChocolateyWebFile `
     -Checksum $hash `
     -ChecksumType sha1
 
-Write-Host 'Extracting ISO contents...'
+Write-Host ('Extracting ISO contents to {0}...' -f $packageDir)
 Expand-DiskImage $fileFullPath $packageDir
 
 Write-Host 'Removing ISO file...'

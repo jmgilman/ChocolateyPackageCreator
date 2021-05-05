@@ -15,6 +15,11 @@ $arguments = @{
 <% } -%>
 
 $params = Get-PackageParameters
+Write-Verbose ('Received {0} parameters from user' -f $params.Count)
+Write-Verbose ('This package supports {0} arguments' -f $arguments.Count)
+if (Get-Command ConvertTo-Json -ErrorAction SilentlyContinue) {
+    Write-Verbose ('Parameters passed: {0}' -f (ConvertTo-Json $params -ErrorAction SilentlyContinue))
+}
 
 # Build arguments
 if (($params.Count -gt 0) -and ($arguments.Count -eq 0)) {
@@ -30,6 +35,10 @@ if (($params.Count -gt 0) -and ($arguments.Count -eq 0)) {
     }
 }
 
+if (Get-Command ConvertTo-Json -ErrorAction SilentlyContinue) {
+    Write-Verbose ('Final package arguments: {0}' -f (ConvertTo-Json $arguments -ErrorAction SilentlyContinue))
+}
+
 # Build argument string
 $silentArgs = $flags
 $silentArgs += ' /l*v "{0}"' -f $logLocation
@@ -43,16 +52,20 @@ foreach($argument in $arguments.GetEnumerator()) {
         $silentArgs += $argString
     }
 }
+Write-Verbose ('Final package argument string: {0}' -f $silentArgs)
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $packageDir = Split-Path -Parent $scriptDir
+Write-Verbose ('Package directory is {0}' -f $packageDir)
 
 $fileLocation = Join-Path $packageDir $filePath
 $fileLocation = (Get-Item $fileLocation).FullName # Resolve relative paths
+Write-Verbose ('Using installer at {0}' -f $fileLocation)
 
 if ($filePath64) {
     $fileLocation64 = Join-Path $packageDir $filePath64
     $fileLocation64 = (Get-Item $fileLocation64).FullName
+    Write-Verbose ('Using 64-bit installer at {0}' -f $fileLocation64)
 }
 
 Write-Host ('Log location is {0}' -f $logLocation)
