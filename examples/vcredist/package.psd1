@@ -9,6 +9,7 @@
         installerType   = 'exe'
         exitCodes       = @(0, 1638, 3010)
         flags           = '/quiet /norestart'
+        argumentPrefix  = ''
         arguments       = @{}
     }
     localFiles    = @()

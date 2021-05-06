@@ -9,6 +9,7 @@
         installerType   = 'msi'
         exitCodes       = @(0, 1638, 1641, 3010)
         flags           = '/qn /norestart'
+        argumentPrefix  = ''
         arguments       = @{
             ACCEPT_EULA                = '1'
             ACCEPT_THIRDPARTY_LICENSES = '1'

@@ -566,13 +566,14 @@ Function Build-InstallerFile {
     $staticFilePath = Join-Path $PSScriptRoot '..\static'
     $installerTemplate = Join-Path $staticFilePath 'template\default\ChocolateyInstall.eps'
     $binding = @{
-        packageName = $Package.Manifest.Metadata.Id
-        filePath    = $Package.Installer.InstallerPath
-        filePath64  = $Package.Installer.InstallerPath64
-        fileType    = $Package.Installer.InstallerType
-        exitCodes   = $Package.Installer.ExitCodes
-        flags       = $Package.Installer.Flags
-        arguments   = $Package.Installer.Arguments
+        packageName    = $Package.Manifest.Metadata.Id
+        filePath       = $Package.Installer.InstallerPath
+        filePath64     = $Package.Installer.InstallerPath64
+        fileType       = $Package.Installer.InstallerType
+        exitCodes      = $Package.Installer.ExitCodes
+        flags          = $Package.Installer.Flags
+        argumentPrefix = $Package.Installer.ArgumentPrefix
+        arguments      = $Package.Installer.Arguments
     }
 
     Invoke-EpsTemplate -Path $installerTemplate -Safe -Binding $binding

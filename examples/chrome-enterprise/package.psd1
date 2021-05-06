@@ -9,6 +9,7 @@
         installerType   = 'msi'
         exitCodes       = @(0)
         flags           = '/qn'
+        argumentPrefix  = ''
         arguments       = @{}
     }
     localFiles    = @()

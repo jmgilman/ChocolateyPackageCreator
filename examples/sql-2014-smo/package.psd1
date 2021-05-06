@@ -9,6 +9,7 @@
         installerType   = 'msi'
         exitCodes       = @(0, 1641, 3010)
         flags           = '/qn /norestart'
+        argumentPrefix  = ''
         arguments       = @{}
     }
     localFiles    = @()

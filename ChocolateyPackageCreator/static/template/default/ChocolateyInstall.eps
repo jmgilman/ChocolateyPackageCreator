@@ -4,7 +4,7 @@ $filePath64 = '<%= $filePath64 %>'
 $fileType = '<%= $fileType %>'
 $flags = '<%= $flags %>'
 $exitCodes = @(<%= $exitCodes -Join ', ' %>)
-$logLocation = '{0}\{1}.{2}.log' -f $env:TEMP,$env:ChocolateyPackageName,$env:ChocolateyPackageVersion
+$argumentPrefix = '<%= $argumentPrefix %>'
 
 <% if ($arguments.Count -eq 0) { -%>
 $arguments = @{}
@@ -41,15 +41,15 @@ if (Get-Command ConvertTo-Json -ErrorAction SilentlyContinue) {
 
 # Build argument string
 $silentArgs = $flags
-$silentArgs += ' /l*v "{0}"' -f $logLocation
+
+if ($fileType.ToLower() -eq 'msi') {
+    $logLocation = '{0}\{1}.{2}.log' -f $env:TEMP,$env:ChocolateyPackageName,$env:ChocolateyPackageVersion
+    $silentArgs += ' /l*v "{0}"' -f $logLocation
+}
+
 foreach($argument in $arguments.GetEnumerator()) {
     if ($argument.Value) {
-        if ($fileType -eq 'exe') {
-            $argString = ' /{0}="{1}"' -f $argument.Name, $argument.Value
-        } else {
-            $argString = ' {0}="{1}"' -f $argument.Name, $argument.Value
-        }
-        $silentArgs += $argString
+        $silentArgs += ' {0}{1}="{2}"' -f $argumentPrefix, $argument.Name, $argument.Value
     }
 }
 Write-Verbose ('Final package argument string: {0}' -f $silentArgs)

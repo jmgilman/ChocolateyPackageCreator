@@ -9,10 +9,12 @@
         installerType   = 'msi'
         exitCodes       = @(0)
         flags           = '/qn'
+        argumentPrefix  = ''
         arguments       = @{
             ACCEPT_EULA = 1
         }
     }
+    localFiles    = @()
     remoteFiles   = @(
         @{
             url        = 'https://my.download.com/installer.msi'
