@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Adds documentation for package file schema
+
 ### Changed
 - Refactors the validation logic to use schema files
 - Package files only need to declare required properties now instead of every property

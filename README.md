@@ -15,7 +15,8 @@ $> New-ChocolateyPackageConfig C:\my\package
 
 Modify the contents of the template package to fit the needs of the package
 you are trying to create. For more in-depth documentation and examples, see the
-`examples` directory. When ready, build the package:
+`examples` directory. To understand the schema of a package file, see the
+[schema documentation](docs/schema.md). When ready, build the package:
 
 ```powershell
 $> $config = Import-PowerShellDataFile 'C:\my\package\package.psd1'

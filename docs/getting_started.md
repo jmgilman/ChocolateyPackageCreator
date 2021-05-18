@@ -81,6 +81,9 @@ in order to validate the downloaded file before building.
 file which is required in all packages. When a package is created the NuSpec
 file is automatically generated from this property and imported into the package.
 
+To see all of the schema information for a package file refer to the 
+[schema documentation](schema.md).
+
 ## Building a Package
 
 Now that we understand the basics of package file format, how would we actually
