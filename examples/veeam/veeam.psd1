@@ -1,11 +1,6 @@
 @{
-    name          = 'veeam'
-    processScript = ''
-    shim          = $False
-    installer     = @{}
-    localFiles    = @()
-    remoteFiles   = @()
-    manifest      = @{
+    name     = 'veeam'
+    manifest = @{
         metadata = @{
             id                       = 'veeam'
             title                    = 'Veeam Backup & Replication'
@@ -67,6 +62,5 @@
                 }
             )
         }
-        files    = @()
     }
 }

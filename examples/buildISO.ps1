@@ -42,7 +42,7 @@ $subPackagePaths = Get-ChildItem $packagesPath -Filter '*.psd1' -Recurse
 foreach ($subPackageFile in $subPackagePaths) {
     Write-Verbose ('Loading sub-package at {0}...' -f $subPackageFile.FullName)
     $packageConfig = Import-PowerShellDataFile $subPackageFile.FullName
-    $packages.Add((New-ChocolateyPackage $subPackageFile.Parent.FullName $packageConfig))
+    $packages.Add((New-ChocolateyPackage $subPackageFile.Parent.FullName $packageConfig)) | Out-Null
 }
 
 # Create ISO package

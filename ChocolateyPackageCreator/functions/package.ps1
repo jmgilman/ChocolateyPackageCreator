@@ -1,3 +1,13 @@
+$TYPES = @(
+    'PackageManifest',
+    'PackageMetadata',
+    'PackageDependency',
+    'PackageFile',
+    'LocalFile',
+    'RemoteFile',
+    'PackageInstaller'
+)
+
 <#
 .SYNOPSIS
     Returns a ChocolateyISOPackage object using the given packages
@@ -33,23 +43,14 @@ Function New-ChocolateyISOPackage {
     # Clone config to prevent modifying passed in hash table
     $config = $PackageConfig.Clone()
 
-    # Add package path, meta package, and packages, then validate configuration
+    # Add package path, meta package, and packages
     $config.Add('path', $PackagePath)
     $config.Add('metapackage', $MetaPackage)
     $config.Add('packages', $Packages)
-    Test-ISOPackageConfiguration -Configuration $config
 
-    $config.IsoFile = New-Object RemoteFile -Property $config.IsoFile
-    $config.manifest.metadata.dependencies = $config.manifest.metadata.dependencies.ForEach( {
-            New-Object PackageDependency -Property $_
-        })
-    $config.manifest = @{
-        metadata = New-Object PackageMetadata -Property $config.manifest.metadata
-        files    = $config.manifest.files.ForEach( {
-                New-Object PackageFile -Property $_
-            })
-    }
-    New-Object ChocolateyISOPackage -Property $config
+    # Convert configuration to object
+    $packageSchema = Get-Schema 'ChocolateyISOPackage'
+    Invoke-Schema $packageSchema $config 'ChocolateyISOPackage' $TYPES
 }
 
 <#
@@ -57,9 +58,7 @@ Function New-ChocolateyISOPackage {
     Returns a ChocolateyPackage object using the given configuration
 .DESCRIPTION
     Validates the given package configuration data and then creates a new
-    ChocolateyPackage object from the configuration data. The validation is
-    strict, meaning all configuration properties must be present and no
-    erroneous properties may be present. 
+    ChocolateyPackage object from the configuration data. 
 .PARAMETER PackagePath
     The full file path to where the package files are located
 .PARAMETER PackageConfig
@@ -81,40 +80,18 @@ Function New-ChocolateyPackage {
     # Clone config to prevent modifying passed in hash table
     $config = $PackageConfig.Clone()
 
-    # Add package path and then validate configuration
+    # Add package path and fully qualify local file paths
     $config.Add('path', $PackagePath)
-    Test-PackageConfiguration -Configuration $config
-
-    # Fully qualify local file paths
     foreach ($localFile in $config.localFiles) {
-        $localFile.localPath = Join-Path $PackagePath $localFile.localPath
+        $localFile.localPath = Join-Path $config.Path $localFile.localPath
     }
     if ($config.processScript) {
-        $config.processScript = Join-Path $PackagePath $config.processScript
+        $config.processScript = Join-Path $config.Path $config.processScript
     }
 
-    # Build ChocolateyPackage object from configuration data
-    $config.manifest.metadata.dependencies = $config.manifest.metadata.dependencies.ForEach( {
-            New-Object PackageDependency -Property $_
-        })
-    $config.manifest = @{
-        metadata = New-Object PackageMetadata -Property $config.manifest.metadata
-        files    = $config.manifest.files.ForEach( {
-                New-Object PackageFile -Property $_
-            })
-    }
-    $config.localFiles = $config.localFiles.ForEach( {
-            New-Object LocalFile -Property $_
-        })
-    $config.remoteFiles = $config.remoteFiles.ForEach( {
-            New-Object RemoteFile -Property $_
-        })
-    
-    if ($config.installer) {
-        $config.installer = New-Object PackageInstaller -Property $config.installer
-    }
-
-    New-Object ChocolateyPackage -Property $config
+    # Convert configuration to object
+    $packageSchema = Get-Schema 'ChocolateyPackage'
+    Invoke-Schema $packageSchema $config 'ChocolateyPackage' $TYPES
 }
 
 <#
@@ -146,102 +123,120 @@ Function New-ChocolateyPackageConfig {
     Copy-Item $packageFile $OutPath | Out-Null
 }
 
-Function Test-ISOPackageConfiguration {
+<#
+.SYNOPSIS
+    Loads the schema file for the given custom object type
+.DESCRIPTION
+    Searches in the module schema directory ($MODULEROOT\schema) for a schema
+    file for the given custom object type. It assumes a .PSD1 file with the name
+    of the object type will exist in the schema directory and will automatically
+    import the contents and return them.
+.PARAMETER Name
+    The name of the custom object to load the schema for
+.EXAMPLE
+    $schema = Get-Schema ChocolateyPackage
+.OUTPUTS
+    A hashtable containing the imported contents of the schema file 
+#>
+Function Get-Schema {
     param(
-        [hashtable] $Configuration
+        [string] $Name
     )
-    Test-ConfigSection -Object ([ChocolateyISOPackage]::new()) -Properties $Configuration.Keys
-    foreach ($property in $Configuration.GetEnumerator()) {
-        switch ($property.Name) {
-            IsoFile {
-                Test-ConfigSection -Object ([RemoteFile]::new()) -Properties $property.Value.Keys
-            }
-            Manifest {
-                Test-ConfigSection -Object ([PackageManifest]::new()) -Properties $property.Value.Keys
 
-                if (!($property.Value.metadata -is [hashtable])) {
-                    throw 'Error validating package configuration: metadata property must be a hashtable'
-                }
-                Test-ConfigSection -Object ([PackageMetadata]::new()) -Properties $property.Value.metadata.Keys
-
-                foreach ($dependency in $property.Value.metadata.dependencies) {
-                    Test-ConfigSection -Object ([PackageDependency]::new()) -Properties $dependency.Keys
-                }
-
-                foreach ($file in $property.Value.files) {
-                    Test-ConfigSection -Object ([PackageFile]::new()) -Properties $file.Keys
-                }
-            }
-        }
+    $schemaFile = Join-Path $PSScriptRoot ('..\schema\{0}.psd1' -f $Name)
+    if (!(Test-Path $schemaFile)) {
+        throw ('Could not find schema file for {0} at {1}' -f $Name, $schemaFile)
     }
+
+    Import-PowerShellDataFile $schemaFile
 }
 
-Function Test-PackageConfiguration {
+<#
+.SYNOPSIS
+    Applies the given schema against the given input object
+.DESCRIPTION
+    The given input object is first validated against the schema and then any
+    custom types are converted from their hashtable values to their respective
+    object type. Optional properties that are not present in the input object
+    have the default value contained in the schema applied to them. Only the
+    custom types contained in the $CustomTypes parameter are automaticaly
+    converted, the remaining types are left as is after validation. This
+    function is recursive and will operate down the tree of an object performing
+    validation and conversion on all applicable properties.
+.PARAMETER Name
+    The schema to apply to the input object
+.PARAMETER InputObject
+    The object to validate and transform
+.PARAMETER InputObjectType
+    The type of the input object (used for conversion)
+.PARAMETER CustomTypes
+    A list of types to validate and transform. Each type in the list must have
+    a schema file located in the schema directory.
+.EXAMPLE
+    $transformedObject = Invoke-Schema $mySchema $object 'MyObjectType' @('CustomObjectType')
+.OUTPUTS
+    The validated and transformed input object
+#>
+Function Invoke-Schema {
     param(
-        [hashtable] $Configuration
+        [hashtable] $Schema,
+        [hashtable] $InputObject,
+        [string] $InputObjectType,
+        [string[]] $CustomTypes
     )
 
-    Test-ConfigSection -Object ([ChocolateyPackage]::new()) -Properties $Configuration.Keys
-    foreach ($property in $Configuration.GetEnumerator()) {
-        switch ($property.Name) {
-            Installer {
-                # This property is optional
-                if ($Configuration['Installer'].Count -gt 0) {
-                    Test-ConfigSection -Object ([PackageInstaller]::new()) -Properties $property.Value.Keys
+    $InputObject = $InputObject.Clone()
+
+    foreach ($property in $InputObject.GetEnumerator()) {
+        if (!($property.Name -in $Schema.Keys)) {
+            throw ('Error validating configuration: {0} does not have a {1} property' -f $InputObjectType, $property.Name)
+        }
+    }
+
+    foreach ($property in $Schema.GetEnumerator()) {
+        if (($property.Value.required) -and (!($property.Name -in $InputObject.Keys))) {
+            throw ('Error validating configuration: {0} must have a {1} property' -f $InputObjectType, $property.Name)
+        }
+
+        if (!($property.Value.Required) -and (!($property.Name -in $InputObject.Keys))) {
+            $InputObject.Add($property.Name, $property.Value.default)
+        }
+
+        if ($property.Value.type -match '\[\]') {
+            $inputType = $InputObject[$property.Name].GetType()
+            if (!(($inputType.Name -eq 'ArrayList') -or ($inputType.BaseType.Name -eq 'Array'))) {
+                throw ('Error validating configuration: {0} property of {1} must be an array' -f $property.Name, $InputObjectType)
+            }
+
+            $type = $property.Value.type -replace '\[\]', ''
+            if ($type -in $CustomTypes) {
+                foreach ($subObject in $InputObject[$property.Name]) {
+                    $InputObject[$property.Name] = $InputObject[$property.Name].Clone()
+                    $index = $InputObject[$property.Name].IndexOf($subObject)
+                    
+                    $propertySchema = Get-Schema $type
+                    $InputObject[$property.Name][$index] = Invoke-Schema $propertySchema $subObject $type $CustomTypes
                 }
             }
-            Manifest {
-                Test-ConfigSection -Object ([PackageManifest]::new()) -Properties $property.Value.Keys
-
-                if (!($property.Value.metadata -is [hashtable])) {
-                    throw 'Error validating package configuration: metadata property must be a hashtable'
-                }
-                Test-ConfigSection -Object ([PackageMetadata]::new()) -Properties $property.Value.metadata.Keys
-
-                foreach ($dependency in $property.Value.metadata.dependencies) {
-                    Test-ConfigSection -Object ([PackageDependency]::new()) -Properties $dependency.Keys
+        }
+        else {
+            if ($property.Value.type -in $CustomTypes) {
+                if (($property.Value.required) -and ($InputObject[$property.Name].Count -eq 0)) {
+                    throw ('Error validating configuration: {0} property of {1} cannot be empty' -f $property.Name, $InputObjectType)
                 }
 
-                foreach ($file in $property.Value.files) {
-                    Test-ConfigSection -Object ([PackageFile]::new()) -Properties $file.Keys
-                }
-            }
-            LocalFiles {
-                if (!($property.Value -is [array])) {
-                    throw 'Error validating package configuration: localFiles property must be an array'
-                }
-                foreach ($file in $property.Value) {
-                    Test-ConfigSection -Object ([LocalFile]::new()) -Properties $file.Keys
-                }
-            }
-            RemoteFiles {
-                if (!($property.Value -is [array])) {
-                    throw 'Error validating package configuration: remoteFiles property must be an array'
-                }
-                foreach ($file in $property.Value) {
-                    Test-ConfigSection -Object ([RemoteFile]::new()) -Properties $file.Keys
+                if ($InputObject[$property.Name].Count -gt 0) {
+                    $propertySchema = Get-Schema $property.Value.type
+                    $InputObject[$property.Name] = Invoke-Schema $propertySchema $InputObject[$property.Name] $property.Value.type $CustomTypes
                 }
             }
         }
     }
-}
 
-Function Test-ConfigSection {
-    param(
-        [object] $Object,
-        [string[]] $Properties
-    )
-
-    $objectProperties = $Object | Get-Member | Where-Object MemberType -EQ 'Property' | Select-Object -ExpandProperty Name
-    foreach ($property in $Properties) {
-        if (!($property -in $objectProperties)) {
-            throw 'Error validating package configuration: Object of type {0} does not contain a property with name {1}' -f $Object.GetType().Name, $property
-        }
+    if ($InputObject.GetType() -ne $InputObjectType) {
+        New-Object $InputObjectType -Property $InputObject
     }
-
-    foreach ($property in $objectProperties) {
-        if (!($property -in $Properties)) {
-            throw 'Error validating package configuration: Configuration is missing property {0} for object {1}' -f $property, $Object.GetType().Name
-        }
+    else {
+        $InputObject
     }
 }
