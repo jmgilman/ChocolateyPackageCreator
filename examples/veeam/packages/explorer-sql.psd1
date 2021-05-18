@@ -1,23 +1,17 @@
 @{
-    name          = 'veeam-explorer-sql'
-    processScript = ''
-    shim          = $False
-    installer     = @{
-        scriptPath      = 'tools'
-        installerPath   = 'Explorers\VeeamExplorerforSQL.msi'
-        installerPath64 = ''
-        installerType   = 'msi'
-        exitCodes       = @(0, 1638, 1641, 3010)
-        flags           = '/qn /norestart'
-        argumentPrefix  = ''
-        arguments       = @{
+    name      = 'veeam-explorer-sql'
+    installer = @{
+        scriptPath    = 'tools'
+        installerPath = 'Explorers\VeeamExplorerforSQL.msi'
+        installerType = 'msi'
+        exitCodes     = @(0, 1638, 1641, 3010)
+        flags         = '/qn /norestart'
+        arguments     = @{
             ACCEPT_EULA                = '1'
             ACCEPT_THIRDPARTY_LICENSES = '1'
         }
     }
-    localFiles    = @()
-    remoteFiles   = @()
-    manifest      = @{
+    manifest  = @{
         metadata = @{
             id                       = 'veeam-explorer-sql'
             title                    = 'Veeam Explorer for Microsoft SQL Server'

@@ -1,16 +1,12 @@
 @{
-    name          = 'veeam-enterprise'
-    processScript = ''
-    shim          = $False
-    installer     = @{
-        scriptPath      = 'tools'
-        installerPath   = 'EnterpriseManager\BackupWeb_x64.msi'
-        installerPath64 = ''
-        installerType   = 'msi'
-        exitCodes       = @(0, 1638, 1641, 3010)
-        flags           = '/qn /norestart'
-        argumentPrefix  = ''
-        arguments       = @{
+    name      = 'veeam-enterprise'
+    installer = @{
+        scriptPath    = 'tools'
+        installerPath = 'EnterpriseManager\BackupWeb_x64.msi'
+        installerType = 'msi'
+        exitCodes     = @(0, 1638, 1641, 3010)
+        flags         = '/qn /norestart'
+        arguments     = @{
             ACCEPTEULA                     = 'yes'
             ACCEPT_THIRDPARTY_LICENSES     = '1'
             INSTALLDIR                     = ''
@@ -32,9 +28,7 @@
             VBR_CHECK_UPDATES              = '0'
         }
     }
-    localFiles    = @()
-    remoteFiles   = @()
-    manifest      = @{
+    manifest  = @{
         metadata = @{
             id                       = 'veeam-enterprise'
             title                    = 'Veeam Backup Enterprise Manager'

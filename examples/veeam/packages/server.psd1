@@ -1,16 +1,12 @@
 @{
-    name          = 'veeam-server'
-    processScript = ''
-    shim          = $False
-    installer     = @{
-        scriptPath      = 'tools'
-        installerPath   = 'Backup\Server.x64.msi'
-        installerPath64 = ''
-        installerType   = 'msi'
-        exitCodes       = @(0, 1638, 1641, 3010)
-        flags           = '/qn /norestart'
-        argumentPrefix  = ''
-        arguments       = @{
+    name      = 'veeam-server'
+    installer = @{
+        scriptPath    = 'tools'
+        installerPath = 'Backup\Server.x64.msi'
+        installerType = 'msi'
+        exitCodes     = @(0, 1638, 1641, 3010)
+        flags         = '/qn /norestart'
+        arguments     = @{
             ACCEPTEULA                   = 'yes'
             ACCEPT_THIRDPARTY_LICENSES   = '1'
             INSTALLDIR                   = ''
@@ -29,9 +25,7 @@
             VBR_AUTO_UPGRADE             = '1'
         }
     }
-    localFiles    = @()
-    remoteFiles   = @()
-    manifest      = @{
+    manifest  = @{
         metadata = @{
             id                       = 'veeam-server'
             title                    = 'Veeam Backup & Replication Server'

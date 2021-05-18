@@ -20,7 +20,6 @@
             copyright                = '2021 Veeam'
             licenseUrl               = 'https://www.veeam.com/eula.html'
             requireLicenseAcceptance = 'false'
-            dependencies             = @()
         }
         files    = @(
             @{

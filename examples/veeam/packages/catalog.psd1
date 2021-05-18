@@ -1,16 +1,12 @@
 @{
-    name          = 'veeam-catalog'
-    processScript = ''
-    shim          = $False
-    installer     = @{
-        scriptPath      = 'tools'
-        installerPath   = 'Catalog\VeeamBackupCatalog64.msi'
-        installerPath64 = ''
-        installerType   = 'msi'
-        exitCodes       = @(0, 1638, 1641, 3010)
-        flags           = '/qn /norestart'
-        argumentPrefix  = ''
-        arguments       = @{
+    name      = 'veeam-catalog'
+    installer = @{
+        scriptPath    = 'tools'
+        installerPath = 'Catalog\VeeamBackupCatalog64.msi'
+        installerType = 'msi'
+        exitCodes     = @(0, 1638, 1641, 3010)
+        flags         = '/qn /norestart'
+        arguments     = @{
             ACCEPT_THIRDPARTY_LICENSES = '1'
             INSTALLDIR                 = ''
             VM_CATALOGPATH             = ''
@@ -19,9 +15,7 @@
             VBRC_SERVICE_PORT          = ''
         }
     }
-    localFiles    = @()
-    remoteFiles   = @()
-    manifest      = @{
+    manifest  = @{
         metadata = @{
             id                       = 'veeam-catalog'
             title                    = 'Veeam Backup & Replication Catalog'

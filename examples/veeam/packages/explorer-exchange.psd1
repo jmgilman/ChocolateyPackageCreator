@@ -1,23 +1,17 @@
 @{
-    name          = 'veeam-explorer-exchange'
-    processScript = ''
-    shim          = $False
-    installer     = @{
-        scriptPath      = 'tools'
-        installerPath   = 'Explorers\VeeamExplorerforExchange.msi'
-        installerPath64 = ''
-        installerType   = 'msi'
-        exitCodes       = @(0, 1638, 1641, 3010)
-        flags           = '/qn /norestart'
-        argumentPrefix  = ''
-        arguments       = @{
+    name      = 'veeam-explorer-exchange'
+    installer = @{
+        scriptPath    = 'tools'
+        installerPath = 'Explorers\VeeamExplorerforExchange.msi'
+        installerType = 'msi'
+        exitCodes     = @(0, 1638, 1641, 3010)
+        flags         = '/qn /norestart'
+        arguments     = @{
             ACCEPT_EULA                = '1'
             ACCEPT_THIRDPARTY_LICENSES = '1'
         }
     }
-    localFiles    = @()
-    remoteFiles   = @()
-    manifest      = @{
+    manifest  = @{
         metadata = @{
             id                       = 'veeam-explorer-exchange'
             title                    = 'Veeam Explorer for Microsoft Exchange'

@@ -1,13 +1,9 @@
 @{
     name          = 'eps.extension'
     processScript = 'process.ps1'
-    shim          = $False
-    installer     = @{}
-    localFiles    = @()
     remoteFiles   = @(
         @{
             url        = 'https://github.com/straightdave/eps/archive/refs/tags/v1.0.0.zip'
-            sha1       = ''
             importPath = 'extensions/eps.zip'
         }
     )
@@ -26,7 +22,6 @@
             copyright                = '2021 Dave Wu'
             licenseUrl               = 'https://github.com/straightdave/eps/blob/master/LICENSE'
             requireLicenseAcceptance = 'false'
-            dependencies             = @()
         }
         files    = @(
             @{

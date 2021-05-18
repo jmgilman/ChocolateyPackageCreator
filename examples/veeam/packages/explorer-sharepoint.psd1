@@ -1,23 +1,17 @@
 @{
-    name          = 'veeam-explorer-sharepoint'
-    processScript = ''
-    shim          = $False
-    installer     = @{
-        scriptPath      = 'tools'
-        installerPath   = 'Explorers\VeeamExplorerforSharePoint.msi'
-        installerPath64 = ''
-        installerType   = 'msi'
-        exitCodes       = @(0, 1638, 1641, 3010)
-        flags           = '/qn /norestart'
-        argumentPrefix  = ''
-        arguments       = @{
+    name      = 'veeam-explorer-sharepoint'
+    installer = @{
+        scriptPath    = 'tools'
+        installerPath = 'Explorers\VeeamExplorerforSharePoint.msi'
+        installerType = 'msi'
+        exitCodes     = @(0, 1638, 1641, 3010)
+        flags         = '/qn /norestart'
+        arguments     = @{
             ACCEPT_EULA                = '1'
             ACCEPT_THIRDPARTY_LICENSES = '1'
         }
     }
-    localFiles    = @()
-    remoteFiles   = @()
-    manifest      = @{
+    manifest  = @{
         metadata = @{
             id                       = 'veeam-explorer-sharepoint'
             title                    = 'Veeam Explorer for Microsoft SharePoint'

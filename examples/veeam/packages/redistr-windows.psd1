@@ -1,23 +1,17 @@
 @{
-    name          = 'veeam-redistr-linux'
-    processScript = ''
-    shim          = $False
-    installer     = @{
-        scriptPath      = 'tools'
-        installerPath   = 'Packages\VALRedist.msi'
-        installerPath64 = ''
-        installerType   = 'msi'
-        exitCodes       = @(0, 1638, 1641, 3010)
-        flags           = '/qn /norestart'
-        argumentPrefix  = ''
-        arguments       = @{
+    name      = 'veeam-redistr-linux'
+    installer = @{
+        scriptPath    = 'tools'
+        installerPath = 'Packages\VALRedist.msi'
+        installerType = 'msi'
+        exitCodes     = @(0, 1638, 1641, 3010)
+        flags         = '/qn /norestart'
+        arguments     = @{
             ACCEPT_EULA                = '1'
             ACCEPT_THIRDPARTY_LICENSES = '1'
         }
     }
-    localFiles    = @()
-    remoteFiles   = @()
-    manifest      = @{
+    manifest  = @{
         metadata = @{
             id                       = 'veeam-redistr-linux'
             title                    = 'Redistributable Package for Veeam Agent for Linux'

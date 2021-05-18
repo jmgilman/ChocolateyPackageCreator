@@ -1,19 +1,14 @@
 @{
-    name          = 'vcredist'
-    processScript = ''
-    shim          = $False
-    installer     = @{
+    name        = 'vcredist'
+    installer   = @{
         scriptPath      = 'tools'
         installerPath   = 'tools/VC_redist.x86.exe'
         installerPath64 = 'tools/VC_redist.x64.exe'
         installerType   = 'exe'
         exitCodes       = @(0, 1638, 3010)
         flags           = '/quiet /norestart'
-        argumentPrefix  = ''
-        arguments       = @{}
     }
-    localFiles    = @()
-    remoteFiles   = @(
+    remoteFiles = @(
         @{
             url        = 'https://download.visualstudio.microsoft.com/download/pr/85d47aa9-69ae-4162-8300-e6b7e4bf3cf3/52B196BBE9016488C735E7B41805B651261FFA5D7AA86EB6A1D0095BE83687B2/VC_redist.x64.exe'
             sha1       = 'A4EFAD335D3CCFA19963F53398E87BE5C8BEBC45'
@@ -25,7 +20,7 @@
             importPath = 'tools/VC_redist.x86.exe'
         }
     )
-    manifest      = @{
+    manifest    = @{
         metadata = @{
             id                       = 'vcredist'
             title                    = 'Microsoft Visual C++ Redistributable'
@@ -40,7 +35,6 @@
             copyright                = '2021 Microsoft'
             licenseUrl               = 'https://visualstudio.microsoft.com/license-terms/mlt031619/'
             requireLicenseAcceptance = 'false'
-            dependencies             = @()
         }
         files    = @(
             @{

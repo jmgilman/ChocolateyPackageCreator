@@ -1,19 +1,14 @@
 @{
-    name          = 'sql-2014-smo'
-    processScript = ''
-    shim          = $False
-    installer     = @{
+    name        = 'sql-2014-smo'
+    installer   = @{
         scriptPath      = 'tools'
         installerPath   = 'tools/SharedManagementObjectsx86.msi'
         installerPath64 = 'tools/SharedManagementObjectsx64.msi'
         installerType   = 'msi'
         exitCodes       = @(0, 1641, 3010)
         flags           = '/qn /norestart'
-        argumentPrefix  = ''
-        arguments       = @{}
     }
-    localFiles    = @()
-    remoteFiles   = @(
+    remoteFiles = @(
         @{
             url        = 'https://download.microsoft.com/download/6/7/8/67858AF1-B1B3-48B1-87C4-4483503E71DC/ENU/x86/SharedManagementObjects.msi'
             sha1       = 'C07B882538863A2B125A2EDA29D269D803CD0F0D'
@@ -25,7 +20,7 @@
             importPath = 'tools/SharedManagementObjectsx64.msi'
         }
     )
-    manifest      = @{
+    manifest    = @{
         metadata = @{
             id                       = 'sql-2014-smo'
             title                    = 'Microsoft SQL Server 2014 Management Objects'

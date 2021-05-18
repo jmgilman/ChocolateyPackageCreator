@@ -1,15 +1,11 @@
 @{
-    name          = 'python'
-    processScript = ''
-    shim          = $False
-    installer     = @{
+    name        = 'python'
+    installer   = @{
         scriptPath      = 'tools'
         installerPath   = 'tools\python-3.9.5.exe'
         installerPath64 = 'tools\python-3.9.5-amd64.exe'
         installerType   = 'exe'
-        exitCodes       = @(0)
         flags           = '/quiet'
-        argumentPrefix  = ''
         arguments       = @{
             InstallAllUsers           = '1'
             TargetDir                 = ''
@@ -37,8 +33,7 @@
             SimpleInstallDescription  = ''
         }
     }
-    localFiles    = @()
-    remoteFiles   = @(
+    remoteFiles = @(
         @{
             url        = 'https://www.python.org/ftp/python/3.9.5/python-3.9.5.exe'
             sha1       = '1A71DD77D9EF8C39AEB3AE218CD4F0353F8B3AFD'
@@ -50,7 +45,7 @@
             importPath = 'tools/python-3.9.5-amd64.exe'
         }
     )
-    manifest      = @{
+    manifest    = @{
         metadata = @{
             id                       = 'python'
             title                    = 'Python 3'
@@ -65,7 +60,6 @@
             copyright                = '2021 Python Software Foundation'
             licenseUrl               = 'https://docs.python.org/3/license.html'
             requireLicenseAcceptance = 'false'
-            dependencies             = @()
         }
         files    = @(
             @{

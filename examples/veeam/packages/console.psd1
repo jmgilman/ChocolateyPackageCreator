@@ -1,24 +1,18 @@
 @{
-    name          = 'veeam-console'
-    processScript = ''
-    shim          = $False
-    installer     = @{
-        scriptPath      = 'tools'
-        installerPath   = 'Backup/Shell.x64.msi'
-        installerPath64 = ''
-        installerType   = 'msi'
-        exitCodes       = @(0, 1638, 1641, 3010)
-        flags           = '/qn /norestart'
-        argumentPrefix  = ''
-        arguments       = @{
+    name      = 'veeam-console'
+    installer = @{
+        scriptPath    = 'tools'
+        installerPath = 'Backup/Shell.x64.msi'
+        installerType = 'msi'
+        exitCodes     = @(0, 1638, 1641, 3010)
+        flags         = '/qn /norestart'
+        arguments     = @{
             ACCEPTEULA                 = 'yes'
             ACCEPT_THIRDPARTY_LICENSES = '1'
             INSTALLDIR                 = ''
         }
     }
-    localFiles    = @()
-    remoteFiles   = @()
-    manifest      = @{
+    manifest  = @{
         metadata = @{
             id                       = 'veeam-console'
             title                    = 'Veeam Backup & Replication Console'

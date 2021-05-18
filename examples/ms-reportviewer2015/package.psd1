@@ -1,26 +1,20 @@
 @{
-    name          = 'ms-reportviewer2015'
-    processScript = ''
-    shim          = $False
-    installer     = @{
-        scriptPath      = 'tools'
-        installerPath   = 'tools/ReportViewer.msi'
-        installerPath64 = ''
-        installerType   = 'msi'
-        exitCodes       = @(0, 3010, 1603, 1641)
-        flags           = '/qn /norestart'
-        argumentPrefix  = ''
-        arguments       = @{}
+    name        = 'ms-reportviewer2015'
+    installer   = @{
+        scriptPath    = 'tools'
+        installerPath = 'tools/ReportViewer.msi'
+        installerType = 'msi'
+        exitCodes     = @(0, 3010, 1603, 1641)
+        flags         = '/qn /norestart'
     }
-    localFiles    = @()
-    remoteFiles   = @(
+    remoteFiles = @(
         @{
             url        = 'https://download.microsoft.com/download/A/1/2/A129F694-233C-4C7C-860F-F73139CF2E01/ENU/x86/ReportViewer.msi'
             sha1       = 'DDF94C52F2CBA110306916667EFD168DD260769D'
             importPath = 'tools/ReportViewer.msi'
         }
     )
-    manifest      = @{
+    manifest    = @{
         metadata = @{
             id                       = 'ms-reportviewer2015'
             title                    = 'Microsoft Report Viewer 2015 Runtime'

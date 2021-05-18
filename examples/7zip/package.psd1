@@ -1,17 +1,14 @@
 @{
-    name          = '7zip'
-    processScript = ''
-    shim          = $True
-    installer     = @{}
-    localFiles    = @()
-    remoteFiles   = @(
+    name        = '7zip'
+    shim        = $True
+    remoteFiles = @(
         @{
             url        = 'https://www.7-zip.org/a/7z1900-x64.exe'
             sha1       = '9FA11A63B43F83980E0B48DC9BA2CB59D545A4E8'
             importPath = 'tools/7z.exe'
         }
     )
-    manifest      = @{
+    manifest    = @{
         metadata = @{
             id                       = '7zip'
             title                    = '7Zip File Archiver'
@@ -26,7 +23,6 @@
             copyright                = '2021 Igor Pavlov'
             licenseUrl               = 'http://www.7-zip.org/license.txt'
             requireLicenseAcceptance = 'false'
-            dependencies             = @()
         }
         files    = @(
             @{

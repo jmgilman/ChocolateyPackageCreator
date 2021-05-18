@@ -1,19 +1,14 @@
 @{
-    name          = 'sql-2014-clr'
-    processScript = ''
-    shim          = $False
-    installer     = @{
+    name        = 'sql-2014-clr'
+    installer   = @{
         scriptPath      = 'tools'
         installerPath   = 'tools/SQLSysClrTypesx86.msi'
         installerPath64 = 'tools/SQLSysClrTypesx64.msi'
         installerType   = 'msi'
         exitCodes       = @(0, 1641, 3010)
         flags           = '/qn /norestart'
-        argumentPrefix  = ''
-        arguments       = @{}
     }
-    localFiles    = @()
-    remoteFiles   = @(
+    remoteFiles = @(
         @{
             url        = 'https://download.microsoft.com/download/6/7/8/67858AF1-B1B3-48B1-87C4-4483503E71DC/ENU/x86/SQLSysClrTypes.msi'
             sha1       = '4175191DAFA15D582C2438DAAA9E1EE19D68AB63'
@@ -25,7 +20,7 @@
             importPath = 'tools/SQLSysClrTypesx64.msi'
         }
     )
-    manifest      = @{
+    manifest    = @{
         metadata = @{
             id                       = 'sql-2014-clr'
             title                    = 'Microsoft System CLR Types for SQL Server 2014'
@@ -40,7 +35,6 @@
             copyright                = '2021 Microsoft'
             licenseUrl               = 'https://www.microsoft.com/en-us/download/details.aspx?id=53164'
             requireLicenseAcceptance = 'false'
-            dependencies             = @()
         }
         files    = @(
             @{
