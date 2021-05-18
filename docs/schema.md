@@ -6,10 +6,10 @@ file will result in the module failing the validation step. Any optional
 properties that are not defined in your configuration file will automatically
 have the default value from the schema applied to them.
 
-See the [schema directory](ChocolateyPackageCreator/schema) for all of the schema files.
+See the [schema directory](../ChocolateyPackageCreator/schema) for all of the schema files.
 
 
-## [ChocolateyPackage](ChocolateyPackageCreator/schema/ChocolateyPackage.psd1)
+## [ChocolateyPackage](../ChocolateyPackageCreator/schema/ChocolateyPackage.psd1)
 | Name | Type | Required | Default Value | Description
 | --- | --- | --- | --- | --- |
 | Name | String | True | | The name of the package (used to identify it in logging)
@@ -20,7 +20,7 @@ See the [schema directory](ChocolateyPackageCreator/schema) for all of the schem
 | RemoteFiles | [RemoteFile[]](#RemoteFile) | False | `@()` | A list of remote files to be downloaded to the package
 | Manifest | [PackageManifest](#PackageManifest) | True | | Configuration data for generating the package manifest file
 
-## [ChocolateyISOPackage](ChocolateyPackageCreator/schema/ChocolateyISOPackage.psd1)
+## [ChocolateyISOPackage](../ChocolateyPackageCreator/schema/ChocolateyISOPackage.psd1)
 | Name | Type | Required | Default Value | Description
 | --- | --- | --- | --- | --- |
 | Name | String | True | | The name of the package (used to identify it in logging)
@@ -29,7 +29,7 @@ See the [schema directory](ChocolateyPackageCreator/schema) for all of the schem
 | MetaPackage | [ChocolateyPackage](#ChocolateyPackage) | True | | The package object for the meta package which combines all other package files
 | Packages | [ChocolateyPackage[]](#ChocolateyPackage) | True | | A list of all sub-packages that will be compiled as part of the final package
 
-## [PackageInstaller](ChocolateyPackageCreator/schema/PackageInstaller.psd1)
+## [PackageInstaller](../ChocolateyPackageCreator/schema/PackageInstaller.psd1)
 | Name | Type | Required | Default Value | Description
 | --- | --- | --- | --- | --- |
 | ScriptPath | String | True | | The relative path where the generated installer script will be placed
@@ -41,26 +41,26 @@ See the [schema directory](ChocolateyPackageCreator/schema) for all of the schem
 | ArgumentPrefix | String | False | `''` | A prefix to prepend to every argument passed to the installer
 | Arguments | Hashtable | False | `@{}` | A hash table of arguments the end-user can supply which will be passed to the installer
 
-## [LocalFile](ChocolateyPackageCreator/schema/LocalFile.psd1)
+## [LocalFile](../ChocolateyPackageCreator/schema/LocalFile.psd1)
 | Name | Type | Required | Default Value | Description
 | --- | --- | --- | --- | --- |
 | LocalPath | String | True | | The relative path (from the package configuration file) to a local file to include in the package
 | ImportPath | String | True | | The relative path (from the package root) where the file should be copied
 
-## [RemoteFile](ChocolateyPackageCreator/schema/RemoteFile.psd1)
+## [RemoteFile](../ChocolateyPackageCreator/schema/RemoteFile.psd1)
 | Name | Type | Required | Default Value | Description
 | --- | --- | --- | --- | --- |
 | Url | String | True | | The URL the file will be downloaded from
 | Sha1 | String | False | `''` | The expected SHA1 hash of the remote file
 | ImportPath | String | True | | The relative path (from the package root) where the file should be downloaded to
 
-## [PackageManifest](ChocolateyPackageCreator/schema/PackageManifest.psd1)
+## [PackageManifest](../ChocolateyPackageCreator/schema/PackageManifest.psd1)
 | Name | Type | Required | Default Value | Description
 | --- | --- | --- | --- | --- |
 | Metadata | [PackageMetadata](#PackageMetadata) | True | | Configuration data for generating the package metadata
 | Files | [PackageFile[]](#PackageFile) | False | `@()` | A list of relative package file or file paths to include in the final compiled package file
 
-## [PackageMetadata](ChocolateyPackageCreator/schema/PackageMetadata.psd1)
+## [PackageMetadata](../ChocolateyPackageCreator/schema/PackageMetadata.psd1)
 | Name | Type | Required | Default Value | Description
 | --- | --- | --- | --- | --- |
 | Id | String | True | | The unique id of the package
@@ -77,13 +77,13 @@ See the [schema directory](ChocolateyPackageCreator/schema) for all of the schem
 | RequireLicenseAcceptance | String | True | | Whether the end-user is required to accept the software license before installing
 | Dependencies | [PackageDependency[]](#PackageDependency) | False | `@()` | A list of packages this package is dependent on
 
-## [PackageFile](ChocolateyPackageCreator/schema/PackageFile.psd1)
+## [PackageFile](../ChocolateyPackageCreator/schema/PackageFile.psd1)
 | Name | Type | Required | Default Value | Description
 | --- | --- | --- | --- | --- |
 | Src | String | True | | A relative package file or file path to include in the final compiled package file
 | Target | String | True | | The relative package path where the source files will be placed in the final compiled package file
 
-## [PackageDependency](ChocolateyPackageCreator/schema/PackageDependency.psd1)
+## [PackageDependency](../ChocolateyPackageCreator/schema/PackageDependency.psd1)
 | Name | Type | Required | Default Value | Description
 | --- | --- | --- | --- | --- |
 | Id | String | True | | The package ID of the dependent package
