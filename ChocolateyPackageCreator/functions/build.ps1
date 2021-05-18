@@ -85,7 +85,6 @@ Function Build-ChocolateyPackage {
     }
 
     if ($Package.Installer.InstallerPath) {
-        Write-Verbose ('The installer is: {0}' -f (ConvertTo-Json $Package.Installer))
         $installerFolder = Join-Path $buildDir $Package.Installer.ScriptPath
         if (!(Test-Path $installerFolder)) {
             New-Item -ItemType Directory $installerFolder | Out-Null
